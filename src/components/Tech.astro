@@ -1,0 +1,32 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="tech" id="tecnologia">
+  <div class="container">
+    <div class="tech-card reveal">
+      <div class="tech-content">
+        <div class="tech-eyebrow" data-i18n="tech.eyebrow">{t('tech.eyebrow')}</div>
+        <h2 class="tech-title" data-i18n="tech.title" set:html={t('tech.title')} />
+        <p class="tech-body" data-i18n="tech.body">{t('tech.body')}</p>
+        <a href="#" class="btn btn-light" style="border-color:var(--gold);color:var(--gold)">
+          <span data-i18n="tech.cta">{t('tech.cta')}</span>
+          <span class="arr">↗</span>
+        </a>
+      </div>
+      <div class="tech-stats">
+        <div>
+          <div class="tech-stat-num" data-count="90">90 min</div>
+          <div class="tech-stat-label" data-i18n="tech.stat1">{t('tech.stat1')}</div>
+        </div>
+        <div>
+          <div class="tech-stat-num" data-count="100">100%</div>
+          <div class="tech-stat-label" data-i18n="tech.stat2">{t('tech.stat2')}</div>
+        </div>
+        <div>
+          <div class="tech-stat-num">0</div>
+          <div class="tech-stat-label" data-i18n="tech.stat3">{t('tech.stat3')}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

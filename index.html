@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
 <style>
 :root{
@@ -1101,6 +1103,132 @@ html.js-loaded .reveal.in{opacity:1;transform:translateY(0)}
   border-top:1px solid var(--line);letter-spacing:.05em;
 }
 
+/* ── SCROLL PROGRESS BAR ── */
+.progress-bar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  height:3px;transform-origin:left;transform:scaleX(0);
+  background:linear-gradient(90deg,var(--gold) 0%,var(--green) 100%);
+  pointer-events:none;
+}
+
+/* ── CURSOR GLOW (desktop) ── */
+.cursor-glow{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9990;
+  width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,165,107,.13) 0%,transparent 65%);
+  transform:translate(-50%,-50%);
+  transition:opacity .4s;
+  opacity:0;
+}
+@media(hover:hover){.cursor-glow{opacity:1}}
+
+/* ── HERO ENHANCEMENTS ── */
+.hero-ambient{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 60%,rgba(31,92,68,.09) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 70% at 85% 25%,rgba(201,165,107,.07) 0%,transparent 70%);
+  animation:ambientShift 14s ease-in-out infinite alternate;
+}
+@keyframes ambientShift{
+  0%{opacity:.7;transform:scale(1)}
+  100%{opacity:1;transform:scale(1.08)}
+}
+#heroCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:.55;
+}
+.hero{overflow:hidden;position:relative}
+.hero-content{position:relative;z-index:1}
+
+/* ── HERO WORD SPLIT ── */
+.hero-word{
+  display:inline-block;
+  overflow:hidden;
+  vertical-align:bottom;
+}
+.hero-word-inner{
+  display:inline-block;
+  transform:translateY(110%);
+}
+
+/* ── STAT COUNTER ── */
+.tech-stat-num[data-count]{transition:color .3s}
+
+/* ── ENHANCED CARD REVEAL ── */
+.product-card,.partner-card,.case-card,.client-cell{
+  will-change:transform,opacity;
+}
+
+/* ── SECTION DIVIDER ── */
+.section-line{
+  width:48px;height:2px;background:var(--gold);
+  margin-bottom:1.5rem;transform-origin:left;
+  transform:scaleX(0);transition:transform .7s var(--ease);
+}
+.section-line.in{transform:scaleX(1)}
+
+/* ── FLOATING LEAVES (hero decoration) ── */
+@keyframes leafFloat{
+  0%{transform:translateY(0) rotate(0deg);opacity:0}
+  10%{opacity:.7}
+  90%{opacity:.4}
+  100%{transform:translateY(-110vh) rotate(360deg);opacity:0}
+}
+
+/* ── MAGNETIC BUTTON glow ── */
+.btn-dark::after,.nav-cta::after{
+  content:'';position:absolute;inset:0;border-radius:99px;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(201,165,107,.25),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.btn-dark:hover::after,.nav-cta:hover::after{opacity:1}
+.btn-dark,.nav-cta{position:relative;isolation:isolate;overflow:hidden}
+
+/* ── PARALLAX MEDIA ── */
+.hero-media{will-change:transform}
+
+/* ── NUMBER BIG GLOW ── */
+.effect-number-big{
+  text-shadow:0 0 60px rgba(201,165,107,.5);
+  animation:numberPulse 3s ease-in-out infinite alternate;
+}
+@keyframes numberPulse{
+  0%{text-shadow:0 0 40px rgba(201,165,107,.3)}
+  100%{text-shadow:0 0 80px rgba(201,165,107,.7)}
+}
+
+/* ── PARTNER MARK SHIMMER ── */
+.partner-mark{
+  position:relative;overflow:hidden;
+}
+.partner-mark::after{
+  content:'';position:absolute;
+  top:-50%;left:-75%;width:50%;height:200%;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.25) 50%,transparent 60%);
+  transform:skewX(-20deg);
+  opacity:0;transition:opacity .1s;
+}
+.partner-card:hover .partner-mark::after{
+  opacity:1;
+  animation:shimmer .55s ease-in-out;
+}
+@keyframes shimmer{
+  0%{left:-75%}100%{left:125%}
+}
+
+/* ── CLIENT CELL RIPPLE ── */
+.client-cell{position:relative;isolation:isolate;overflow:hidden}
+.client-cell::after{
+  content:'';position:absolute;
+  width:0;height:0;border-radius:50%;
+  background:rgba(201,165,107,.18);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  transition:width .45s ease,height .45s ease,opacity .45s ease;
+  opacity:0;
+}
+.client-cell:hover::after{width:300px;height:300px;opacity:1}
+
 /* RESPONSIVE */
 @media(max-width:900px){
   .nav{padding:1rem 1.2rem}
@@ -1150,6 +1278,9 @@ html.js-loaded .reveal.in{opacity:1;transform:translateY(0)}
 </head>
 <body>
 
+<div class="progress-bar" id="progressBar"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="#" class="nav-logo">
@@ -1175,6 +1306,8 @@ html.js-loaded .reveal.in{opacity:1;transform:translateY(0)}
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-ambient"></div>
+  <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
     <h1 class="hero-headline">
       <span data-es="Sostenemos al " data-en="We hold the ">Sostenemos al </span>

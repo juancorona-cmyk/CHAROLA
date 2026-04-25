@@ -1,0 +1,51 @@
+---
+import { t } from '../i18n/ui';
+---
+<nav class="nav" id="nav">
+
+  <a href="#inicio" class="nav-logo">
+    <span class="nav-logo-mark">100%</span>
+    Naturizable
+  </a>
+
+  <ul class="nav-pill" id="navPill">
+    <li class="nav-pill-cursor" id="navCursor" aria-hidden="true"></li>
+    <li class="nav-pill-item"><a href="#manifiesto" data-i18n="nav.manifesto">{t('nav.manifesto')}</a></li>
+    <li class="nav-pill-item"><a href="#producto" data-i18n="nav.product">{t('nav.product')}</a></li>
+    <li class="nav-pill-item"><a href="#embajadores" data-i18n="nav.ambassadors">{t('nav.ambassadors')}</a></li>
+    <li class="nav-pill-item"><a href="#casos" data-i18n="nav.cases">{t('nav.cases')}</a></li>
+    <li class="nav-pill-item"><a href="#contacto" data-i18n="nav.contact">{t('nav.contact')}</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="active" data-lang="es">ES</button>
+      <button data-lang="en">EN</button>
+    </div>
+    <a href="#contacto" class="nav-cta">
+      <span data-i18n="nav.join">{t('nav.join')}</span>
+      <span class="arr">↗</span>
+    </a>
+  </div>
+
+  <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="nav-mobile" id="navLinks">
+    <a href="#manifiesto" data-i18n="nav.manifesto">{t('nav.manifesto')}</a>
+    <a href="#producto" data-i18n="nav.product">{t('nav.product')}</a>
+    <a href="#embajadores" data-i18n="nav.ambassadors">{t('nav.ambassadors')}</a>
+    <a href="#casos" data-i18n="nav.cases">{t('nav.cases')}</a>
+    <a href="#contacto" data-i18n="nav.contact">{t('nav.contact')}</a>
+    <a href="#contacto" class="nav-cta" style="align-self:flex-start; margin-top:.5rem">
+      <span data-i18n="nav.join">{t('nav.join')}</span>
+      <span class="arr">↗</span>
+    </a>
+    <div class="lang-toggle" style="margin-top:.25rem">
+      <button data-lang="es">ES</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+
+</nav>

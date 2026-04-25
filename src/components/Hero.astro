@@ -1,0 +1,80 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="hero-v2" id="inicio">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-v2-ambient"></div>
+
+  <div class="hero-v2-grid">
+
+    <div class="hero-v2-left">
+
+      <div class="hero-v2-eyebrow">
+        <span class="hero-v2-eyebrow-dot"></span>
+        <span data-i18n="hero.eyebrow">{t('hero.eyebrow')}</span>
+      </div>
+
+      <h1 class="hero-v2-headline">
+        <span data-i18n="hero.h1a">{t('hero.h1a')}</span><br>
+        <span data-i18n="hero.h1b">{t('hero.h1b')}</span><em data-i18n="hero.h1c">{t('hero.h1c')}</em>
+      </h1>
+
+      <p class="hero-v2-pitch" data-i18n="hero.pitch">{t('hero.pitch')}</p>
+
+      <div class="hero-v2-actions">
+        <a href="#manifiesto" class="btn btn-dark">
+          <span data-i18n="hero.cta1">{t('hero.cta1')}</span>
+          <span class="arr">↗</span>
+        </a>
+        <a href="#contacto" class="btn btn-light">
+          <span data-i18n="hero.cta2">{t('hero.cta2')}</span>
+        </a>
+      </div>
+
+      <div class="hero-v2-stats">
+        <div class="hero-v2-stat">
+          <div class="hero-v2-stat-num">90<span>min</span></div>
+          <div class="hero-v2-stat-label" data-i18n="hero.stat1">{t('hero.stat1')}</div>
+        </div>
+        <div class="hero-v2-stat-sep"></div>
+        <div class="hero-v2-stat">
+          <div class="hero-v2-stat-num">100<span>%</span></div>
+          <div class="hero-v2-stat-label" data-i18n="hero.stat2">{t('hero.stat2')}</div>
+        </div>
+        <div class="hero-v2-stat-sep"></div>
+        <div class="hero-v2-stat">
+          <div class="hero-v2-stat-num">0</div>
+          <div class="hero-v2-stat-label">PFAS</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hero-v2-right">
+      <div class="hero-v2-circle"></div>
+      <div class="hero-v2-product-wrap" id="heroProductWrap">
+        <img
+          src="/assets/img/products/Charola.png"
+          alt="Charola 855 — 100% Naturizable"
+          class="hero-v2-product"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="hero-v2-swiss-tag" id="heroSwissTag">
+          <div class="swiss-mini"></div>
+          <div class="hero-v2-swiss-info">
+            <span class="hero-v2-swiss-line1" data-i18n="hero.swiss1">{t('hero.swiss1')}</span>
+            <span class="hero-v2-swiss-line2" data-i18n="hero.swiss2">{t('hero.swiss2')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hero-v2-scroll" id="heroScroll">
+    <div class="hero-v2-scroll-bar"><div class="hero-v2-scroll-thumb"></div></div>
+    <span>Scroll</span>
+  </div>
+
+</section>

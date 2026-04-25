@@ -1,0 +1,25 @@
+---
+import { t } from '../i18n/ui';
+const items = ['01','02','03','04','05'];
+---
+<section class="identity" id="identidad">
+  <div class="container">
+    <div class="identity-head reveal">
+      <div class="identity-eyebrow" data-i18n="identity.eyebrow">{t('identity.eyebrow')}</div>
+      <h2 class="identity-title" data-i18n="identity.title" set:html={t('identity.title')} />
+    </div>
+
+    <div class="identity-list">
+      {items.map(num => (
+        <div class="identity-row reveal">
+          <div class="identity-num">{num}</div>
+          <div class="identity-content">
+            <div class="identity-tag" data-i18n={`identity.i${num}tag`}>{t(`identity.i${num}tag`)}</div>
+            <div class="identity-role" data-i18n={`identity.i${num}role`} set:html={t(`identity.i${num}role`)} />
+          </div>
+          <div class="identity-arrow">↗</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

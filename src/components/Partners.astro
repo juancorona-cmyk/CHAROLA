@@ -1,0 +1,46 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="partners">
+  <div class="container">
+    <div class="partners-head reveal">
+      <div class="partners-eyebrow" data-i18n="partners.eyebrow">{t('partners.eyebrow')}</div>
+      <h2 class="partners-title" data-i18n="partners.title" set:html={t('partners.title')} />
+    </div>
+    <div class="partners-grid">
+
+      <div class="partner-card reveal">
+        <div class="partner-mark whale">
+          <img src="/assets/img/partners/Lonely.webp" alt="Lonely Whale" />
+        </div>
+        <div class="partner-name">Lonely Whale</div>
+        <div class="partner-role" data-i18n="partners.lw">{t('partners.lw')}</div>
+      </div>
+
+      <div class="partner-card reveal">
+        <div class="partner-mark tom">
+          <img src="/assets/img/partners/Tom Ford.webp" alt="Tom Ford" />
+        </div>
+        <div class="partner-name">Tom Ford Plastic Innovation</div>
+        <div class="partner-role" data-i18n="partners.tf">{t('partners.tf')}</div>
+      </div>
+
+      <div class="partner-card reveal">
+        <div class="partner-mark un">
+          <img src="/assets/img/partners/NU.png" alt="Naciones Unidas" />
+        </div>
+        <div class="partner-name" data-i18n="partners.unName">{t('partners.unName')}</div>
+        <div class="partner-role" data-i18n="partners.un">{t('partners.un')}</div>
+      </div>
+
+      <div class="partner-card reveal">
+        <div class="partner-mark bbva">
+          <img src="/assets/img/partners/BBVA.jpg" alt="BBVA" />
+        </div>
+        <div class="partner-name">BBVA</div>
+        <div class="partner-role" data-i18n="partners.bbva">{t('partners.bbva')}</div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="effect">
+  <div class="container">
+    <div class="effect-card reveal">
+      <div class="effect-visual">
+        <div class="effect-numbers">
+          <div class="effect-number-big">510</div>
+          <div class="effect-number-label" data-i18n="effect.piecesLabel">{t('effect.piecesLabel')}</div>
+        </div>
+      </div>
+      <div class="effect-content">
+        <div class="effect-eyebrow" data-i18n="effect.eyebrow">{t('effect.eyebrow')}</div>
+        <h2 class="effect-title" data-i18n="effect.title" set:html={t('effect.title')} />
+        <p class="effect-body" data-i18n="effect.body">{t('effect.body')}</p>
+        <a href="#contacto" class="btn btn-dark" style="align-self:flex-start">
+          <span data-i18n="effect.cta">{t('effect.cta')}</span>
+          <span class="arr">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

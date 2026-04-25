@@ -1,0 +1,416 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Manifesto from '../components/Manifesto.astro';
+import Identity from '../components/Identity.astro';
+import Tech from '../components/Tech.astro';
+import Products from '../components/Products.astro';
+import Clients from '../components/Clients.astro';
+import Cases from '../components/Cases.astro';
+import Compare from '../components/Compare.astro';
+import Effect from '../components/Effect.astro';
+import Partners from '../components/Partners.astro';
+import Ambassadors from '../components/Ambassadors.astro';
+import Events from '../components/Events.astro';
+import Contact from '../components/Contact.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Footer from '../components/Footer.astro';
+import Chatbot from '../components/Chatbot.astro';
+import { ui, defaultLang, t } from '../i18n/ui';
+import '../styles/global.css';
+---
+
+<Layout title={t('site.title')} description={t('site.description')}>
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <Nav />
+  <Hero />
+  <Manifesto />
+  <Identity />
+  <Tech />
+  <Products />
+  <Clients />
+  <Cases />
+  <Compare />
+  <Effect />
+  <Partners />
+  <Ambassadors />
+  <Events />
+  <Contact />
+  <FinalCTA />
+  <Footer />
+  <Chatbot />
+</Layout>
+
+<script define:vars={{ ui, defaultLang }} is:inline>
+  window.ui = ui;
+  window.currentLang = defaultLang;
+</script>
+
+<script>
+document.documentElement.classList.add('js-loaded');
+
+setTimeout(() => {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}, 3000);
+
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('nav');
+const progressBar = document.getElementById('progressBar');
+const cursorGlow = document.getElementById('cursorGlow');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) nav?.classList.add('scrolled');
+  else nav?.classList.remove('scrolled');
+
+  if (progressBar) {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    progressBar.style.transform = `scaleX(${pct})`;
+  }
+}, { passive: true });
+
+/* ── CURSOR GLOW ── */
+document.addEventListener('mousemove', e => {
+  if (cursorGlow) {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+  }
+}, { passive: true });
+
+/* ── MOBILE MENU ── */
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+if (menuToggle && navLinks) {
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuToggle.classList.remove('open');
+  }));
+}
+
+/* ── PILL NAV CURSOR ── */
+const navPill = document.getElementById('navPill');
+const navCursor = document.getElementById('navCursor') as HTMLElement | null;
+const pillItems = navPill?.querySelectorAll<HTMLElement>('.nav-pill-item');
+
+pillItems?.forEach(item => {
+  item.addEventListener('mouseenter', () => {
+    if (!navCursor) return;
+    navCursor.style.left = item.offsetLeft + 'px';
+    navCursor.style.width = item.offsetWidth + 'px';
+    navCursor.style.opacity = '1';
+    pillItems.forEach(i => i.classList.remove('active-pill'));
+    item.classList.add('active-pill');
+  });
+});
+navPill?.addEventListener('mouseleave', () => {
+  if (navCursor) navCursor.style.opacity = '0';
+  pillItems?.forEach(i => i.classList.remove('active-pill'));
+});
+
+/* ── LANGUAGE TOGGLE ── */
+const langBtns = document.querySelectorAll<HTMLButtonElement>('.lang-toggle button');
+
+function updateTranslations(lang: string) {
+  document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (!key) return;
+    const parts = key.split('.');
+    let obj: any = (window as any).ui[lang];
+    for (const p of parts) obj = obj?.[p];
+    if (obj) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        (el as HTMLInputElement).placeholder = obj;
+      } else if (el.dataset.i18nOption !== undefined) {
+        el.textContent = obj;
+      } else {
+        el.innerHTML = obj;
+      }
+    }
+  });
+
+  // Special case for placeholders if not caught by above
+  document.querySelectorAll<HTMLElement>('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (!key) return;
+    const parts = key.split('.');
+    let obj: any = (window as any).ui[lang];
+    for (const p of parts) obj = obj?.[p];
+    if (obj) (el as HTMLInputElement).placeholder = obj;
+  });
+}
+
+langBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.dataset.lang as string;
+    (window as any).currentLang = lang;
+    langBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.documentElement.lang = lang;
+    
+    updateTranslations(lang);
+    updateAmbPlaceholders(lang);
+  });
+});
+
+/* ── REVEAL ON SCROLL ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('in');
+  });
+}, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── HERO ENTRANCE (restart on scroll) ── */
+const heroSection = document.getElementById('inicio');
+const heroLeft = document.querySelector<HTMLElement>('.hero-v2-left');
+const heroProductWrap = document.getElementById('heroProductWrap');
+
+function startHeroAnim() {
+  heroLeft?.classList.remove('visible');
+  heroProductWrap?.classList.remove('visible');
+  void (heroLeft as HTMLElement | null)?.offsetWidth;
+  void (heroProductWrap as HTMLElement | null)?.offsetWidth;
+  setTimeout(() => heroLeft?.classList.add('visible'), 60);
+  setTimeout(() => heroProductWrap?.classList.add('visible'), 520);
+}
+
+function stopHeroAnim() {
+  heroLeft?.classList.remove('visible');
+  heroProductWrap?.classList.remove('visible');
+}
+
+if (heroSection) {
+  const heroIO = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) startHeroAnim();
+      else stopHeroAnim();
+    });
+  }, { threshold: 0.25 });
+  heroIO.observe(heroSection);
+}
+
+/* ── HERO CANVAS PARTICLES ── */
+const canvas = document.getElementById('heroCanvas') as HTMLCanvasElement | null;
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    let particles: { x: number; y: number; vx: number; vy: number; r: number; alpha: number }[] = [];
+    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    for (let i = 0; i < 45; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - .5) * .35,
+        vy: (Math.random() - .5) * .35,
+        r: Math.random() * 1.8 + .5,
+        alpha: Math.random() * .5 + .15,
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,165,107,${p.alpha})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    };
+    animate();
+  }
+}
+
+/* ── AMBASSADOR GATE ── */
+const AMBASSADOR_CODE = 'MANOSDORADAS';
+const ambLocked = document.getElementById('ambLocked');
+const ambUnlocked = document.getElementById('ambUnlocked');
+const ambCodeInput = document.getElementById('ambCodeInput') as HTMLInputElement | null;
+const ambCodeBtn = document.getElementById('ambCodeBtn');
+const ambCodeError = document.getElementById('ambCodeError');
+const ambLockBtn = document.getElementById('ambLockBtn');
+const ambGateInputWrap = document.querySelector<HTMLElement>('.amb-gate-input');
+const ambForm = document.getElementById('ambForm') as HTMLFormElement | null;
+
+function unlockAmb() {
+  if (ambLocked) ambLocked.style.display = 'none';
+  if (ambUnlocked) ambUnlocked.style.display = 'block';
+  if (ambCodeError) ambCodeError.textContent = '';
+  if (ambCodeInput) ambCodeInput.value = '';
+  document.querySelectorAll('#ambUnlocked .reveal').forEach(el => {
+    observer.observe(el);
+    setTimeout(() => el.classList.add('in'), 100);
+  });
+}
+
+function lockAmb() {
+  if (ambLocked) ambLocked.style.display = 'block';
+  if (ambUnlocked) ambUnlocked.style.display = 'none';
+}
+
+function checkAmbCode() {
+  const lang = document.documentElement.lang || 'es';
+  const code = (ambCodeInput?.value || '').trim().toUpperCase();
+  const ui = (window as any).ui[lang].amb;
+  if (!code) {
+    if (ambCodeError) ambCodeError.textContent = ui.errBlank;
+    return;
+  }
+  if (code === AMBASSADOR_CODE.toUpperCase()) {
+    unlockAmb();
+  } else {
+    if (ambCodeError) ambCodeError.textContent = ui.errInvalid;
+    ambGateInputWrap?.classList.add('error');
+    setTimeout(() => ambGateInputWrap?.classList.remove('error'), 500);
+  }
+}
+
+ambCodeBtn?.addEventListener('click', checkAmbCode);
+ambCodeInput?.addEventListener('keypress', e => { if (e.key === 'Enter') checkAmbCode(); });
+ambLockBtn?.addEventListener('click', lockAmb);
+ambForm?.addEventListener('submit', e => {
+  e.preventDefault();
+  const lang = document.documentElement.lang || 'es';
+  const ui = (window as any).ui[lang].amb;
+  alert(ui.alertSent);
+  ambForm.reset();
+});
+
+function updateAmbPlaceholders(lang: string) {
+  if (ambCodeInput) {
+    const ui = (window as any).ui[lang].amb;
+    ambCodeInput.placeholder = ui.gatePlaceholder;
+  }
+}
+updateAmbPlaceholders(document.documentElement.lang || 'es');
+
+/* ── CHATBOT ── */
+const chatbot = document.getElementById('chatbot');
+const chatbotLauncher = document.getElementById('chatbotLauncher');
+const chatbotClose = document.getElementById('chatbotClose');
+const chatbotBody = document.getElementById('chatbotBody');
+const chatbotInput = document.getElementById('chatbotInput') as HTMLInputElement | null;
+const chatbotForm = document.getElementById('chatbotForm') as HTMLFormElement | null;
+
+function getBotUI() {
+  const lang = document.documentElement.lang || 'es';
+  return (window as any).ui[lang].chatbot;
+}
+
+const responses: Record<string, { keys: string[]; replyKey: string; quickReplyKeys?: string[] }> = {
+  greeting: { keys: ['hola','buenas','hi','hello','hey','saludos','buenos dias','buen dia','buenas tardes','buenas noches','que tal'], replyKey: 'rGreeting' },
+  about: { keys: ['que es','quien es','quienes son','de que se trata','marca','empresa','compania','presentacion','sobre ustedes'], replyKey: 'rAbout', quickReplyKeys: ['qr1', 'qr2', 'qr3'] },
+  product: { keys: ['charola','tamano','tamaño','medida','medidas','dimension','dimensiones','855','producto','productos'], replyKey: 'rProduct', quickReplyKeys: ['rPrice', 'qr2'] },
+  material: { keys: ['de que esta','material','celulosa','plastico','foam','pfas','contenido','esta hecha','hecho de','pet','poliestireno','reciclable','compostable','biodegradable'], replyKey: 'rMaterial', quickReplyKeys: ['qr1', 'qr2'] },
+  price: { keys: ['precio','cuanto cuesta','cuanto vale','costo','cotizacion','cotizar','presupuesto','tarifa'], replyKey: 'rPrice', quickReplyKeys: ['qr4', 'qr2'] },
+  sample: { keys: ['muestra','muestras','prueba','probar','piloto','pilotos','solicitar','testar','demo'], replyKey: 'rSample', quickReplyKeys: ['qr4', 'rPrice'] },
+  location: { keys: ['donde','ubicacion','direccion','planta','oficina','morelia','michoacan','mexico','encuentran','encuentro','llegar','mapa'], replyKey: 'rLocation', quickReplyKeys: ['qr4', 'qr1'] },
+  ambassador: { keys: ['embajador','embajadores','creator','creators','programa','aplicar','postular','sueldo','contenido','influencer','chef','carnicero','frutero'], replyKey: 'rAmbassador', quickReplyKeys: ['qr4', 'qr1'] },
+  thanks: { keys: ['gracias','thanks','thank you','muchas gracias','genial','perfecto','excelente','listo'], replyKey: 'rThanks' },
+  bye: { keys: ['adios','bye','hasta luego','nos vemos','chao','salir'], replyKey: 'rBye' },
+};
+
+function normalize(text: string) {
+  return (text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[¿?¡!]/g, '');
+}
+
+function findResponse(text: string) {
+  const t = normalize(text);
+  const ui = getBotUI();
+  for (const k in responses) {
+    const r = responses[k];
+    for (const key of r.keys) { 
+      if (t.includes(key)) {
+        return { 
+          reply: ui[r.replyKey], 
+          quickReplies: r.quickReplyKeys?.map(rk => ui[rk] || rk) 
+        };
+      }
+    }
+  }
+  return { 
+    reply: ui.fallback, 
+    quickReplies: [ui.qr1, ui.qr2, ui.qr4] 
+  };
+}
+
+function appendMessage(text: string, type = 'bot') {
+  const msg = document.createElement('div');
+  msg.className = 'chat-msg ' + type;
+  msg.innerHTML = text;
+  chatbotBody?.appendChild(msg);
+  if (chatbotBody) chatbotBody.scrollTop = chatbotBody.scrollHeight;
+}
+
+function appendQuickReplies(replies: string[]) {
+  if (!replies?.length) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-quick-replies';
+  replies.forEach(r => {
+    if (!r) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chat-quick-reply';
+    btn.textContent = r;
+    btn.onclick = () => { appendMessage(r, 'user'); wrap.remove(); handleResponse(r); };
+    wrap.appendChild(btn);
+  });
+  chatbotBody?.appendChild(wrap);
+  if (chatbotBody) chatbotBody.scrollTop = chatbotBody.scrollHeight;
+}
+
+function showTyping() {
+  const t = document.createElement('div');
+  t.className = 'chatbot-typing'; t.id = 'typingIndicator';
+  t.innerHTML = '<span></span><span></span><span></span>';
+  chatbotBody?.appendChild(t);
+  if (chatbotBody) chatbotBody.scrollTop = chatbotBody.scrollHeight;
+}
+function hideTyping() { document.getElementById('typingIndicator')?.remove(); }
+
+function handleResponse(userText: string) {
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    const r = findResponse(userText);
+    appendMessage(r.reply, 'bot');
+    if (r.quickReplies) appendQuickReplies(r.quickReplies);
+  }, 700 + Math.random() * 500);
+}
+
+let chatInitialized = false;
+function initChat() {
+  if (chatInitialized) return;
+  chatInitialized = true;
+  const ui = getBotUI();
+  setTimeout(() => {
+    appendMessage(ui.welcome, 'bot');
+    appendQuickReplies([ui.qr1, ui.qr2, ui.qr3, ui.qr4]);
+  }, 400);
+}
+
+chatbotLauncher?.addEventListener('click', () => { chatbot?.classList.add('open'); initChat(); });
+chatbotClose?.addEventListener('click', () => chatbot?.classList.remove('open'));
+chatbotForm?.addEventListener('submit', e => {
+  e.preventDefault();
+  const txt = chatbotInput?.value.trim();
+  if (!txt) return;
+  appendMessage(txt, 'user');
+  if (chatbotInput) chatbotInput.value = '';
+  handleResponse(txt);
+});
+</script>

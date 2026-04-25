@@ -1,0 +1,91 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="contact" id="contacto">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:0">
+      <div class="intro-eyebrow" data-i18n="contact.eyebrow">{t('contact.eyebrow')}</div>
+      <h2 class="section-title-big" style="margin-top:1rem" data-i18n="contact.title" set:html={t('contact.title')} />
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-info">
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lAddress">{t('contact.lAddress')}</div>
+          <div>
+            <div class="contact-value">
+              <a href="https://maps.google.com/?q=Belisario+Dominguez+30+Morelia+Michoacan" target="_blank">Belisario Domínguez 30 ↗</a>
+            </div>
+            <div class="contact-value-sub" data-i18n="contact.lAddressSub">{t('contact.lAddressSub')}</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lPhone">{t('contact.lPhone')}</div>
+          <div style="display:flex; flex-direction:column; gap:0.8rem">
+            <div>
+              <div class="contact-value">
+                <a href="tel:+524433575815">443 357 5815</a>
+              </div>
+              <div class="contact-value-sub">Ventas · WhatsApp</div>
+            </div>
+            <div>
+              <div class="contact-value">
+                <a href="tel:+524431151629">443 115 1629</a>
+              </div>
+              <div class="contact-value-sub">Logística · Atención</div>
+            </div>
+            <div>
+              <div class="contact-value">
+                <a href="tel:+524432072593">443 207 2593</a>
+              </div>
+              <div class="contact-value-sub">Información General</div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lHello">{t('contact.lHello')}</div>
+          <div>
+            <div class="contact-value">
+              <a href="mailto:hola@naturizable.com">hola@naturizable.com</a>
+            </div>
+            <div class="contact-value-sub" data-i18n="contact.lHelloSub">{t('contact.lHelloSub')}</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lAmbassadors">{t('contact.lAmbassadors')}</div>
+          <div>
+            <div class="contact-value">
+              <a href="mailto:embajadores@naturizable.com">embajadores@naturizable.com</a>
+            </div>
+            <div class="contact-value-sub" data-i18n="contact.lAmbassadorsSub">{t('contact.lAmbassadorsSub')}</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lInfo">{t('contact.lInfo')}</div>
+          <div>
+            <div class="contact-value">
+              <a href="mailto:info@naturizable.com">info@naturizable.com</a>
+            </div>
+            <div class="contact-value-sub" data-i18n="contact.lInfoSub">{t('contact.lInfoSub')}</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-label" data-i18n="contact.lSales">{t('contact.lSales')}</div>
+          <div>
+            <div class="contact-value">
+              <a href="mailto:ventas@naturizable.com">ventas@naturizable.com</a>
+            </div>
+            <div class="contact-value-sub" data-i18n="contact.lSalesSub">{t('contact.lSalesSub')}</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-qr">
+        <div class="contact-qr-frame">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&bgcolor=ffffff&color=0F3D2E&margin=15&data=https%3A%2F%2Fnaturizable.com" alt="QR · naturizable.com" />
+        </div>
+        <div class="contact-qr-label" data-i18n="contact.qrLabel">{t('contact.qrLabel')}</div>
+        <div class="contact-qr-sub" data-i18n="contact.qrSub">{t('contact.qrSub')}</div>
+        <div class="contact-qr-url">naturizable.com</div>
+      </div>
+    </div>
+  </div>
+</section>

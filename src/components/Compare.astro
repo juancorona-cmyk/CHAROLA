@@ -1,0 +1,56 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="compare">
+  <div class="container">
+    <div class="section-head reveal" style="display:block">
+      <h2 class="section-title-big" data-i18n="compare.title" set:html={t('compare.title')} />
+    </div>
+    <div class="compare-table reveal">
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="compare.attr">{t('compare.attr')}</th>
+            <th>Charola 855</th>
+            <th>Foam PS</th>
+            <th>Plástico PP</th>
+            <th data-i18n="compare.cardboard">{t('compare.cardboard')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="compare.row1" set:html={t('compare.row1')} />
+            <td class="compare-check">✓</td><td class="compare-x">✗</td><td class="compare-x">✗</td><td class="compare-x">✗</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row2">{t('compare.row2')}</td>
+            <td class="compare-check">✓</td><td class="compare-x">✗</td><td class="compare-x">✗</td><td class="compare-x">✗</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row3">{t('compare.row3')}</td>
+            <td class="compare-check">✓</td><td class="compare-x">✗</td><td class="compare-x">✗</td><td class="compare-x">✗</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row4">{t('compare.row4')}</td>
+            <td class="compare-check">✓</td><td class="compare-x">✗</td><td class="compare-x">✗</td><td class="compare-x">✗</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row5">{t('compare.row5')}</td>
+            <td class="compare-check">✓</td><td class="compare-check">✓</td><td class="compare-check">✓</td><td class="compare-x">✗</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row6">{t('compare.row6')}</td>
+            <td class="compare-check">✓</td><td class="compare-x">✗</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.row7">{t('compare.row7')}</td>
+            <td data-i18n="compare.weeksVal">{t('compare.weeksVal')}</td>
+            <td data-i18n="compare.foam500">{t('compare.foam500')}</td>
+            <td data-i18n="compare.pp450">{t('compare.pp450')}</td>
+            <td data-i18n="compare.decadesVal">{t('compare.decadesVal')}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

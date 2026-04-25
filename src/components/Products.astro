@@ -1,0 +1,51 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="products" id="producto">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="section-title-big" data-i18n="products.title" set:html={t('products.title')} />
+      <a href="#" class="section-link" data-i18n="products.viewAll">{t('products.viewAll')}</a>
+    </div>
+    <div class="product-grid">
+
+      <div class="product-card reveal">
+        <div class="product-img" style="padding:0;background:#E8E0CC">
+          <img src="/assets/img/products/producto.jpg" alt="Charola 855" style="width:100%;height:100%;object-fit:cover" />
+        </div>
+        <div class="product-tag" data-i18n="products.p1tag">{t('products.p1tag')}</div>
+        <h3 class="product-name" data-i18n="products.p1name">{t('products.p1name')}</h3>
+        <p class="product-desc" data-i18n="products.p1desc">{t('products.p1desc')}</p>
+        <div class="product-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </div>
+
+      <div class="product-card reveal">
+        <div class="product-img" style="padding:0;background:#E8E0CC">
+          <img src="/assets/img/products/vaso.jpg" alt="Vasos de Celulosa" style="width:100%;height:100%;object-fit:cover" />
+        </div>
+        <div class="product-tag coming" data-i18n="products.inDev">{t('products.inDev')}</div>
+        <h3 class="product-name" data-i18n="products.p2name">{t('products.p2name')}</h3>
+        <p class="product-desc" data-i18n="products.p2desc">{t('products.p2desc')}</p>
+        <div class="product-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </div>
+
+      <div class="product-card reveal">
+        <div class="product-img" style="padding:0;background:#E8E0CC">
+          <img src="/assets/img/products/contenedor.jpg" alt="Contenedores Take-Away" style="width:100%;height:100%;object-fit:cover" />
+        </div>
+        <div class="product-tag coming" data-i18n="products.inDev">{t('products.inDev')}</div>
+        <h3 class="product-name" data-i18n="products.p3name">{t('products.p3name')}</h3>
+        <p class="product-desc" data-i18n="products.p3desc">{t('products.p3desc')}</p>
+        <div class="product-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>

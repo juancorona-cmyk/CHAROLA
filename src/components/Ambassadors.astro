@@ -1,0 +1,140 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="ambassadors" id="embajadores">
+  <div class="container">
+
+    <!-- LOCKED VIEW -->
+    <div id="ambLocked">
+      <div class="amb-gate-card reveal">
+        <div class="amb-gate-pattern"></div>
+        <div class="amb-gate-content">
+          <div class="amb-gate-eyebrow" data-i18n="amb.gateEyebrow">{t('amb.gateEyebrow')}</div>
+          <svg class="amb-gate-lock" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="10" y="22" width="28" height="20" rx="2"/>
+            <path d="M16 22v-6a8 8 0 0 1 16 0v6"/>
+            <circle cx="24" cy="32" r="2.5" fill="currentColor"/>
+          </svg>
+          <h2 class="amb-gate-title" data-i18n="amb.gateTitle" set:html={t('amb.gateTitle')} />
+          <p class="amb-gate-tagline" data-i18n="amb.gateTagline">{t('amb.gateTagline')}</p>
+          <div class="amb-gate-input">
+            <input type="text" id="ambCodeInput"
+              placeholder={t('amb.gatePlaceholder')}
+              data-i18n-placeholder="amb.gatePlaceholder"
+              autocomplete="off" />
+            <button type="button" id="ambCodeBtn" data-i18n="amb.gateBtn">{t('amb.gateBtn')}</button>
+          </div>
+          <div class="amb-gate-error" id="ambCodeError"></div>
+          <p class="amb-gate-note" data-i18n="amb.gateNote" set:html={t('amb.gateNote')} />
+        </div>
+      </div>
+    </div>
+
+    <!-- UNLOCKED VIEW -->
+    <div id="ambUnlocked" style="display:none">
+      <div class="section-head reveal">
+        <h2 class="section-title-big" data-i18n="amb.unlockedTitle" set:html={t('amb.unlockedTitle')} />
+        <button type="button" class="section-link" id="ambLockBtn"
+          style="background:none;border:none;font-family:inherit;cursor:pointer"
+          data-i18n="amb.lockBtn">{t('amb.lockBtn')}</button>
+      </div>
+
+      <div class="amb-pillars reveal">
+        <div class="amb-pillar">
+          <div class="amb-pillar-num">01</div>
+          <h3 class="amb-pillar-title" data-i18n="amb.p01title">{t('amb.p01title')}</h3>
+          <p class="amb-pillar-text" data-i18n="amb.p01text">{t('amb.p01text')}</p>
+        </div>
+        <div class="amb-pillar">
+          <div class="amb-pillar-num">02</div>
+          <h3 class="amb-pillar-title" data-i18n="amb.p02title">{t('amb.p02title')}</h3>
+          <p class="amb-pillar-text" data-i18n="amb.p02text">{t('amb.p02text')}</p>
+        </div>
+        <div class="amb-pillar">
+          <div class="amb-pillar-num">03</div>
+          <h3 class="amb-pillar-title" data-i18n="amb.p03title">{t('amb.p03title')}</h3>
+          <p class="amb-pillar-text" data-i18n="amb.p03text">{t('amb.p03text')}</p>
+        </div>
+      </div>
+
+      <div class="amb-comp reveal">
+        <div class="amb-comp-head">
+          <div class="amb-comp-eyebrow" data-i18n="amb.compEyebrow">{t('amb.compEyebrow')}</div>
+          <h3 class="amb-comp-title" data-i18n="amb.compTitle" set:html={t('amb.compTitle')} />
+        </div>
+        <div class="amb-comp-grid">
+          <div class="amb-comp-item">
+            <div class="amb-comp-tier" data-i18n="amb.t1tier">{t('amb.t1tier')}</div>
+            <div class="amb-comp-amount">$5,000 <span data-i18n="amb.t1per">{t('amb.t1per')}</span></div>
+            <div class="amb-comp-deliv" data-i18n="amb.t1deliv">{t('amb.t1deliv')}</div>
+          </div>
+          <div class="amb-comp-item highlight">
+            <div class="amb-comp-tier" data-i18n="amb.t2tier">{t('amb.t2tier')}</div>
+            <div class="amb-comp-amount">$10,000 <span data-i18n="amb.t2per">{t('amb.t2per')}</span></div>
+            <div class="amb-comp-deliv" data-i18n="amb.t2deliv">{t('amb.t2deliv')}</div>
+          </div>
+          <div class="amb-comp-item">
+            <div class="amb-comp-tier" data-i18n="amb.t3tier">{t('amb.t3tier')}</div>
+            <div class="amb-comp-amount" data-i18n="amb.t3amount">{t('amb.t3amount')}</div>
+            <div class="amb-comp-deliv" data-i18n="amb.t3deliv">{t('amb.t3deliv')}</div>
+          </div>
+        </div>
+        <div class="amb-comp-note" data-i18n="amb.compNote">{t('amb.compNote')}</div>
+      </div>
+
+      <div class="amb-apply reveal">
+        <div class="amb-apply-left">
+          <div class="amb-apply-eyebrow" data-i18n="amb.applyEyebrow">{t('amb.applyEyebrow')}</div>
+          <h3 class="amb-apply-title" data-i18n="amb.applyTitle" set:html={t('amb.applyTitle')} />
+          <p class="amb-apply-text" data-i18n="amb.applyText">{t('amb.applyText')}</p>
+        </div>
+        <form class="amb-apply-form" id="ambForm">
+          <div class="amb-form-row">
+            <div class="amb-form-group">
+              <label data-i18n="amb.fName">{t('amb.fName')}</label>
+              <input type="text" required />
+            </div>
+            <div class="amb-form-group">
+              <label data-i18n="amb.fCity">{t('amb.fCity')}</label>
+              <input type="text" required />
+            </div>
+          </div>
+          <div class="amb-form-row">
+            <div class="amb-form-group">
+              <label>Instagram</label>
+              <input type="text" placeholder="@usuario" required />
+            </div>
+            <div class="amb-form-group">
+              <label>TikTok / YouTube</label>
+              <input type="text" placeholder="@usuario" />
+            </div>
+          </div>
+          <div class="amb-form-row">
+            <div class="amb-form-group">
+              <label data-i18n="amb.fCategory">{t('amb.fCategory')}</label>
+              <select required>
+                <option value="" data-i18n-option="amb.fSelectOpt">{t('amb.fSelectOpt')}</option>
+                <option>Chef</option>
+                <option data-i18n-option="amb.fOpt2">{t('amb.fOpt2')}</option>
+                <option>Food creator</option>
+                <option data-i18n-option="amb.fOpt4">{t('amb.fOpt4')}</option>
+                <option data-i18n-option="amb.fOpt5">{t('amb.fOpt5')}</option>
+                <option data-i18n-option="amb.fOpt6">{t('amb.fOpt6')}</option>
+              </select>
+            </div>
+            <div class="amb-form-group">
+              <label data-i18n="amb.fAudience">{t('amb.fAudience')}</label>
+              <input type="text" placeholder="50K" />
+            </div>
+          </div>
+          <div class="amb-form-group">
+            <label data-i18n="amb.fWhy">{t('amb.fWhy')}</label>
+            <textarea rows="3"></textarea>
+          </div>
+          <button type="submit" class="amb-form-submit" data-i18n="amb.fSubmit">{t('amb.fSubmit')}</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>

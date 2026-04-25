@@ -1,0 +1,50 @@
+---
+import { t } from '../i18n/ui';
+---
+<section class="cases" id="casos">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="section-title-big" data-i18n="cases.title" set:html={t('cases.title')} />
+      <a href="#" class="section-link" data-i18n="cases.viewAll">{t('cases.viewAll')}</a>
+    </div>
+    <div class="cases-grid">
+
+      <div class="case-card reveal">
+        <div class="case-img"><div class="case-img-mark">855</div></div>
+        <div class="case-meta">
+          <div class="case-tag" data-i18n="cases.c1tag">{t('cases.c1tag')}</div>
+          <h3 class="case-title" data-i18n="cases.c1title">{t('cases.c1title')}</h3>
+          <a href="#" class="case-link" data-i18n="cases.readMore">{t('cases.readMore')}</a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-img alt"><div class="case-img-mark italic">Frutería</div></div>
+        <div class="case-meta">
+          <div class="case-tag" data-i18n="cases.c2tag">{t('cases.c2tag')}</div>
+          <h3 class="case-title" data-i18n="cases.c2title">{t('cases.c2title')}</h3>
+          <a href="#" class="case-link" data-i18n="cases.readMore">{t('cases.readMore')}</a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-img alt2"><div class="case-img-mark italic">Suiza</div></div>
+        <div class="case-meta">
+          <div class="case-tag" data-i18n="cases.c3tag">{t('cases.c3tag')}</div>
+          <h3 class="case-title" data-i18n="cases.c3title">{t('cases.c3title')}</h3>
+          <a href="#" class="case-link" data-i18n="cases.readMore">{t('cases.readMore')}</a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-img alt3"><div class="case-img-mark italic">Food Service</div></div>
+        <div class="case-meta">
+          <div class="case-tag" data-i18n="cases.c4tag">{t('cases.c4tag')}</div>
+          <h3 class="case-title" data-i18n="cases.c4title">{t('cases.c4title')}</h3>
+          <a href="#" class="case-link" data-i18n="cases.readMore">{t('cases.readMore')}</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

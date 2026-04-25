@@ -1,0 +1,31 @@
+---
+import { t } from '../i18n/ui';
+---
+<div class="chatbot" id="chatbot">
+  <button class="chatbot-launcher" id="chatbotLauncher" aria-label="Abrir chat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      <circle cx="8.5" cy="10" r="1" fill="currentColor"/>
+      <circle cx="12" cy="10" r="1" fill="currentColor"/>
+      <circle cx="15.5" cy="10" r="1" fill="currentColor"/>
+    </svg>
+  </button>
+  <div class="chatbot-window">
+    <div class="chatbot-header">
+      <div class="chatbot-avatar">N</div>
+      <div class="chatbot-header-info">
+        <div class="chatbot-name">Naty</div>
+        <div class="chatbot-status" data-i18n="chatbot.status">{t('chatbot.status')}</div>
+      </div>
+      <button class="chatbot-close" id="chatbotClose" aria-label="Cerrar chat">×</button>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <form class="chatbot-input" id="chatbotForm">
+      <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" />
+      <button type="submit" aria-label="Enviar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </form>
+    <div class="chatbot-footer" data-i18n="chatbot.poweredBy">{t('chatbot.poweredBy')}</div>
+  </div>
+</div>

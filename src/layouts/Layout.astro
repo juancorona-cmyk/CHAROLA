@@ -1,0 +1,28 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '100% Naturizable® · Plant-based packaging from Mexico',
+  description = 'The next generation of plant-based packaging. Cellulose tray that nature can take back. Swiss engineering, made in Mexico.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" is:inline></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" is:inline></script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

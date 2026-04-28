@@ -8,6 +8,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/netlify": "^7.0.8",
     "@astrojs/node": "^8.3.4",
     "@libsql/client": "^0.17.3",
     "astro": "^4.16.0",

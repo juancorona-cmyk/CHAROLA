@@ -1,10 +1,10 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import netlify from '@astrojs/netlify';
 
 export default defineConfig({
   site: 'https://naturizable.com',
   output: 'hybrid',
-  adapter: node({ mode: 'standalone' }),
+  adapter: netlify(),
 
   // Comprime HTML en producción
   compressHTML: true,

@@ -1,0 +1,130 @@
+---
+import { t } from '../i18n/ui';
+import { ASSETS } from '../lib/cloudinary';
+---
+
+<section class="enpaques" id="enpaques">
+
+  <!-- ── PANEL 1: dark sticky intro ── -->
+  <div class="enp-panel enp-panel--dark">
+    <div class="enp-bg-grid"></div>
+    <div class="container">
+      <div class="enp-panel-content reveal">
+        <div class="eyebrow" style="color:var(--gold);margin-bottom:1.5rem">
+          <span class="enp-dot"></span>
+          <span data-i18n="enpaques.eyebrow">{t('enpaques.eyebrow')}</span>
+        </div>
+        <h2 class="enp-headline" data-i18n="enpaques.title" set:html={t('enpaques.title')} />
+        <div class="enp-scroll-hint">
+          <span class="enp-scroll-dot"></span>
+          <span data-i18n="enpaques.hint">{t('enpaques.hint')}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 2: video scrub track ── -->
+  <div class="enp-scrub-track" id="enpScrubTrack">
+    <div class="enp-scrub-sticky">
+      <video
+        id="enpaqueVideo"
+        src={ASSETS.video}
+        muted
+        playsinline
+        preload="auto"
+        class="enp-video"
+      ></video>
+      <div class="enp-overlay">
+        <div class="enp-overlay-chips">
+          <span class="enp-chip">
+            <span class="enp-chip-dot"></span>
+            <span data-i18n="enpaques.chip1">{t('enpaques.chip1')}</span>
+          </span>
+          <span class="enp-chip">
+            <span class="enp-chip-dot"></span>
+            <span data-i18n="enpaques.chip2">{t('enpaques.chip2')}</span>
+          </span>
+        </div>
+        <div class="enp-overlay-foot">
+          <span class="enp-watch-label" data-i18n="enpaques.watchLabel">{t('enpaques.watchLabel')}</span>
+          <div class="enp-bar-wrap">
+            <div class="enp-bar-fill" id="enpBarFill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: cream sticky outro ── -->
+  <div class="enp-panel enp-panel--cream">
+    <div class="container">
+      <div class="enp-panel-content enp-panel-content--center reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:1.5rem">
+          <span class="enp-dot" style="background:var(--gold)"></span>
+          <span data-i18n="enpaques.outroEye">{t('enpaques.outroEye')}</span>
+        </div>
+        <h2 class="enp-headline enp-headline--dark" data-i18n="enpaques.outroTitle" set:html={t('enpaques.outroTitle')} />
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+(function () {
+  const video = document.getElementById('enpaqueVideo') as HTMLVideoElement | null;
+  const track = document.getElementById('enpScrubTrack');
+  const fill  = document.getElementById('enpBarFill');
+  if (!video || !track) return;
+
+  // Unlock video on first touch (iOS)
+  document.addEventListener('touchstart', () => {
+    video!.play().then(() => video!.pause()).catch(() => {});
+  }, { once: true, passive: true });
+
+  let targetProgress = 0;
+  let currentProgress = 0;
+  let rafId: number | null = null;
+  let isSeeking = false;
+
+  function getProgress(): number {
+    const rect   = track!.getBoundingClientRect();
+    const trackH = track!.offsetHeight;
+    const winH   = window.innerHeight;
+    // Cap at 0.999 to avoid end-of-video glitch on the last frame
+    return Math.max(0, Math.min(0.999, -rect.top / (trackH - winH)));
+  }
+
+  function tick() {
+    rafId = null;
+    // Lerp: ease toward target (0.12 = smooth but responsive)
+    currentProgress += (targetProgress - currentProgress) * 0.12;
+
+    // Stop animating when close enough
+    const delta = Math.abs(targetProgress - currentProgress);
+    if (delta < 0.0002) currentProgress = targetProgress;
+
+    // Set video time only when ready and not mid-seek
+    if (video!.duration && !isNaN(video!.duration) && !isSeeking) {
+      video!.currentTime = currentProgress * video!.duration;
+    }
+
+    if (fill) fill.style.transform = `scaleX(${currentProgress})`;
+
+    // Keep animating until we reach the target
+    if (delta > 0.0002) rafId = requestAnimationFrame(tick);
+  }
+
+  function onScroll() {
+    targetProgress = getProgress();
+    if (rafId === null) rafId = requestAnimationFrame(tick);
+  }
+
+  // Prevent queued seeks from stacking up
+  video.addEventListener('seeking', () => { isSeeking = true; });
+  video.addEventListener('seeked',  () => { isSeeking = false; });
+
+  video.addEventListener('loadedmetadata', onScroll);
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>

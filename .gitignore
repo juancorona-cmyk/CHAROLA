@@ -1,0 +1,22 @@
+# Astro
+dist/
+.astro/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment variables — NEVER commit secrets
+.env
+.env.local
+.env.production
+
+# Chatbot data (user conversations)
+data/
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/settings.json
+.idea/

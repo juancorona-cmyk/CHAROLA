@@ -1,0 +1,169 @@
+---
+import { ASSETS } from '../lib/cloudinary';
+---
+
+<section class="plx-section" id="tierra">
+  <div class="plx-track" id="plxTrack">
+    <div class="plx-sticky">
+
+      <!-- z1: cielo / fondo -->
+      <img class="plx-img plx-fondo"
+           src={ASSETS.plxFondo}
+           alt="" draggable="false" />
+
+      <!-- z2: tierra media -->
+      <img class="plx-img plx-tierra"
+           id="plxTierra"
+           src={ASSETS.plxTierra}
+           alt="" draggable="false" loading="lazy" decoding="async" />
+
+      <!-- z3: charola — se hunde detrás de BaseTierra -->
+      <img class="plx-img plx-charola"
+           id="plxCharola"
+           src={ASSETS.plxCharola}
+           alt="" draggable="false" loading="lazy" decoding="async" />
+
+      <!-- Logo Suiza — se mueve con la charola -->
+      <img class="plx-img plx-suiza"
+           id="plxSuiza"
+           src={ASSETS.suiza}
+           alt="Swiss Engineering" draggable="false" />
+
+      <!-- Sellos horizontales debajo de la charola -->
+      <div class="plx-sellos-container" id="plxSellos">
+        <img src={ASSETS.sello1} alt="Sello 1" class="plx-sello" draggable="false" />
+        <img src={ASSETS.sello2} alt="Sello 2" class="plx-sello" draggable="false" />
+        <img src={ASSETS.sello3} alt="Sello 3" class="plx-sello" draggable="false" />
+      </div>
+
+      <!-- z3: planta — emerge y se queda plantada -->
+      <img class="plx-img plx-planta"
+           id="plxPlanta"
+           src={ASSETS.plxPlanta}
+           alt="" draggable="false" loading="lazy" decoding="async" />
+
+      <!-- z5: BaseTierra — tapa objetos que bajan -->
+      <img class="plx-img plx-base"
+           src={ASSETS.plxBaseTierra}
+           alt="" draggable="false" loading="lazy" decoding="async" />
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .plx-sellos-container {
+    position: absolute;
+    left: 50%;
+    bottom: 72%; /* Mucho más arriba para evitar la planta */
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6rem; /* Más espacio para sellos más grandes */
+    z-index: 2;
+    will-change: transform, opacity;
+  }
+  .plx-sello {
+    width: 150px; /* Tamaño aumentado para PC */
+    height: auto;
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.2));
+  }
+  @media (max-width: 1024px) {
+    .plx-sello {
+      width: 120px;
+      gap: 4rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .plx-sellos-container {
+      gap: 2rem;
+      bottom: 65%;
+    }
+    .plx-sello {
+      width: 75px;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  const track   = document.getElementById('plxTrack')   as HTMLElement | null;
+  const charola = document.getElementById('plxCharola') as HTMLElement | null;
+  const suiza   = document.getElementById('plxSuiza')   as HTMLElement | null;
+  const planta  = document.getElementById('plxPlanta')  as HTMLElement | null;
+  const tierra  = document.getElementById('plxTierra')  as HTMLElement | null;
+  const sellos  = document.getElementById('plxSellos')  as HTMLElement | null;
+
+  if (!track || !charola || !planta || !sellos || !suiza) return;
+
+  const easeIn  = (t: number) => t * t * t;
+  const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+  const range   = (v: number, a: number, b: number) =>
+    Math.max(0, Math.min(1, (v - a) / (b - a)));
+
+  // Init positions
+  planta.style.transform  = 'translateX(-50%) translateY(105%) scale(0.9)';
+  charola.style.transform = 'translateX(-50%) translateY(0%)';
+  suiza.style.transform   = 'translateX(-50%) translateY(0%)';
+  sellos.style.transform  = 'translateX(-50%) translateY(300%)';
+  sellos.style.opacity    = '0';
+
+  let targetP  = 0;
+  let currentP = 0;
+  let rafId: number | null = null;
+
+  function getProgress(): number {
+    const rect  = track!.getBoundingClientRect();
+    const total = track!.offsetHeight - window.innerHeight;
+    return Math.max(0, Math.min(1, -rect.top / total));
+  }
+
+  function applyTransforms(p: number) {
+    // Charola y Suiza bajan del 0% al 62% del scroll
+    const cp = easeIn(range(p, 0, 0.62));
+    const trayY = cp * 110;
+    charola!.style.transform = `translateX(-50%) translateY(${trayY}%)`;
+    suiza!.style.transform   = `translateX(-50%) translateY(${trayY}%)`;
+    
+    // El logo de suiza se desvanece conforme baja
+    suiza!.style.opacity = (1 - range(p, 0.40, 0.55)).toString();
+
+    // Planta emerge entre 0.52 y 0.82
+    const pp = easeOut(range(p, 0.52, 0.82));
+    planta!.style.transform =
+      `translateX(-50%) translateY(${(1 - pp) * 105}%) scale(${0.90 + pp * 0.10})`;
+
+    // Sellos: suben sincronizados con la planta (0.52 a 0.82)
+    // Empiezan desde muy abajo (400%) para que el efecto sea notable
+    const emergeSellos = easeOut(range(p, 0.52, 0.82));
+    const ySello = (1 - emergeSellos) * 400;
+    
+    sellos!.style.transform = `translateX(-50%) translateY(${ySello}%)`;
+    // Aparecen gradualmente conforme suben
+    sellos!.style.opacity   = emergeSellos.toString();
+
+    if (tierra) tierra.style.transform = `translateY(${p * 14}%)`;
+  }
+
+  function tick() {
+    rafId = null;
+    // Lerp — 0.10 keeps it smooth without feeling laggy
+    currentP += (targetP - currentP) * 0.10;
+
+    const delta = Math.abs(targetP - currentP);
+    if (delta < 0.0003) currentP = targetP;
+
+    applyTransforms(currentP);
+
+    if (delta > 0.0003) rafId = requestAnimationFrame(tick);
+  }
+
+  function onScroll() {
+    targetP = getProgress();
+    if (rafId === null) rafId = requestAnimationFrame(tick);
+  }
+
+  // Initial render
+  applyTransforms(0);
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>

@@ -1,5 +1,6 @@
 ---
 import { t } from '../i18n/ui';
+import { ASSETS } from '../lib/cloudinary';
 ---
 <section class="partners">
   <div class="container">
@@ -11,7 +12,7 @@ import { t } from '../i18n/ui';
 
       <div class="partner-card reveal">
         <div class="partner-mark whale">
-          <img src="/assets/img/partners/Lonely.webp" alt="Lonely Whale" />
+          <img src={ASSETS.lonely} alt="Lonely Whale" loading="lazy" decoding="async" />
         </div>
         <div class="partner-name">Lonely Whale</div>
         <div class="partner-role" data-i18n="partners.lw">{t('partners.lw')}</div>
@@ -19,7 +20,7 @@ import { t } from '../i18n/ui';
 
       <div class="partner-card reveal">
         <div class="partner-mark tom">
-          <img src="/assets/img/partners/Tom Ford.webp" alt="Tom Ford" />
+          <img src={ASSETS.tomFord} alt="Tom Ford" loading="lazy" decoding="async" />
         </div>
         <div class="partner-name">Tom Ford Plastic Innovation</div>
         <div class="partner-role" data-i18n="partners.tf">{t('partners.tf')}</div>
@@ -27,7 +28,7 @@ import { t } from '../i18n/ui';
 
       <div class="partner-card reveal">
         <div class="partner-mark un">
-          <img src="/assets/img/partners/NU.png" alt="Naciones Unidas" />
+          <img src={ASSETS.nu} alt="Naciones Unidas" loading="lazy" decoding="async" />
         </div>
         <div class="partner-name" data-i18n="partners.unName">{t('partners.unName')}</div>
         <div class="partner-role" data-i18n="partners.un">{t('partners.un')}</div>
@@ -35,7 +36,7 @@ import { t } from '../i18n/ui';
 
       <div class="partner-card reveal">
         <div class="partner-mark bbva">
-          <img src="/assets/img/partners/BBVA.jpg" alt="BBVA" />
+          <img src={ASSETS.bbva} alt="BBVA" loading="lazy" decoding="async" />
         </div>
         <div class="partner-name">BBVA</div>
         <div class="partner-role" data-i18n="partners.bbva">{t('partners.bbva')}</div>

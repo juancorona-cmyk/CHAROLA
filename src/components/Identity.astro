@@ -10,8 +10,8 @@ const items = ['01','02','03','04','05'];
     </div>
 
     <div class="identity-list">
-      {items.map(num => (
-        <div class="identity-row reveal">
+      {items.map((num, i) => (
+        <div class="identity-row reveal" style={`--delay:${i * 0.07}s`}>
           <div class="identity-num">{num}</div>
           <div class="identity-content">
             <div class="identity-tag" data-i18n={`identity.i${num}tag`}>{t(`identity.i${num}tag`)}</div>

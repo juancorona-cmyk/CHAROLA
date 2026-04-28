@@ -1,5 +1,6 @@
 ---
 import { t } from '../i18n/ui';
+import { ASSETS } from '../lib/cloudinary';
 ---
 <section class="hero-v2" id="inicio">
   <canvas id="heroCanvas"></canvas>
@@ -54,8 +55,8 @@ import { t } from '../i18n/ui';
       <div class="hero-v2-circle"></div>
       <div class="hero-v2-product-wrap" id="heroProductWrap">
         <img
-          src="/assets/img/products/Charola.png"
-          alt="Charola 855 — 100% Naturizable"
+          src={ASSETS.charola}
+          alt="Charola 855 - Empaque de fibra de celulosa compostable, FDA-approved, sin plástico ni PFAS para carnicería y food service"
           class="hero-v2-product"
           loading="eager"
           decoding="async"

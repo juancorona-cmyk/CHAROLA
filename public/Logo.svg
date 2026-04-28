@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 644.76 644.76">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #113f30;
+      }
+
+      .cls-2 {
+        font-size: 65.66px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #fff;
+        font-family: Century751BT-SemiBold, 'Century 751 Semi BT';
+        font-weight: 600;
+      }
+
+      .cls-3 {
+        font-size: 174.99px;
+      }
+
+      .cls-4 {
+        letter-spacing: -.06em;
+      }
+    </style>
+  </defs>
+  <circle class="cls-1" cx="322.38" cy="322.38" r="322.38"/>
+  <text class="cls-3" transform="translate(96.03 343.02)"><tspan x="0" y="0">100%</tspan></text>
+  <text class="cls-2" transform="translate(81.26 420.2)"><tspan x="0" y="0">N</tspan><tspan class="cls-4" x="52.6" y="0">A</tspan><tspan x="91.14" y="0">TURIZABLE</tspan></text>
+</svg>

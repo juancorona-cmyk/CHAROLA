@@ -7,85 +7,107 @@ import { t } from '../i18n/ui';
       <div class="intro-eyebrow" data-i18n="contact.eyebrow">{t('contact.eyebrow')}</div>
       <h2 class="section-title-big" style="margin-top:1rem" data-i18n="contact.title" set:html={t('contact.title')} />
     </div>
-    <div class="contact-grid reveal">
+
+    <div class="contact-grid reveal" style="--delay:.1s">
+
+      <!-- ── LEFT: contact rows ── -->
       <div class="contact-info">
+
+        <!-- DIRECCIÓN -->
         <div class="contact-row">
           <div class="contact-label" data-i18n="contact.lAddress">{t('contact.lAddress')}</div>
-          <div>
-            <div class="contact-value">
-              <a href="https://maps.google.com/?q=Belisario+Dominguez+30+Morelia+Michoacan" target="_blank">Belisario Domínguez 30 ↗</a>
+          <div style="display:flex; flex-direction:column; gap:1.2rem">
+            <div>
+              <div class="contact-region-tag">México</div>
+              <div class="contact-value">
+                <a href="https://maps.google.com/?q=Belisario+Dominguez+30+Morelia+Michoacan" target="_blank">Belisario Domínguez 30 ↗</a>
+              </div>
+              <div class="contact-value-sub" data-i18n="contact.lAddressSub">{t('contact.lAddressSub')}</div>
             </div>
-            <div class="contact-value-sub" data-i18n="contact.lAddressSub">{t('contact.lAddressSub')}</div>
+            <div>
+              <div class="contact-region-tag">Oficina · Office</div>
+              <div class="contact-value">San Antonio, TX 78258</div>
+            </div>
           </div>
         </div>
+
+        <!-- TELÉFONO -->
         <div class="contact-row">
           <div class="contact-label" data-i18n="contact.lPhone">{t('contact.lPhone')}</div>
-          <div style="display:flex; flex-direction:column; gap:0.8rem">
+          <div style="display:flex; flex-direction:column; gap:1.2rem">
             <div>
+              <div class="contact-region-tag">México</div>
               <div class="contact-value">
-                <a href="tel:+524433575815">443 357 5815</a>
+                <a href="tel:+524432072593">+52 (443) 207-2593</a>
               </div>
-              <div class="contact-value-sub">Ventas · WhatsApp</div>
-            </div>
-            <div>
-              <div class="contact-value">
-                <a href="tel:+524431151629">443 115 1629</a>
-              </div>
-              <div class="contact-value-sub">Logística · Atención</div>
+              <div class="contact-value-sub">Atención · WhatsApp</div>
             </div>
             <div>
+              <div class="contact-region-tag">Estados Unidos</div>
               <div class="contact-value">
-                <a href="tel:+524432072593">443 207 2593</a>
+                <a href="tel:+12104293789">+1 (210) 429-3789</a>
               </div>
-              <div class="contact-value-sub">Información General</div>
+              <div class="contact-value-sub">Sales · Operations</div>
             </div>
           </div>
         </div>
+
+        <!-- EMAIL -->
         <div class="contact-row">
-          <div class="contact-label" data-i18n="contact.lHello">{t('contact.lHello')}</div>
-          <div>
-            <div class="contact-value">
-              <a href="mailto:hola@naturizable.com">hola@naturizable.com</a>
+          <div class="contact-label" data-i18n="contact.lEmail">{t('contact.lEmail')}</div>
+          <div class="contact-emails-list">
+            <div class="contact-email-item">
+              <div class="contact-email-tag" data-i18n="contact.lHello">{t('contact.lHello')}</div>
+              <div class="contact-value">
+                <a href="mailto:hola@naturizable.com">hola@naturizable.com</a>
+              </div>
+              <div class="contact-value-sub" data-i18n="contact.lHelloSub">{t('contact.lHelloSub')}</div>
             </div>
-            <div class="contact-value-sub" data-i18n="contact.lHelloSub">{t('contact.lHelloSub')}</div>
+            <div class="contact-email-item">
+              <div class="contact-email-tag" data-i18n="contact.lAmbassadors">{t('contact.lAmbassadors')}</div>
+              <div class="contact-value">
+                <a href="mailto:embajadores@naturizable.com">embajadores@naturizable.com</a>
+              </div>
+              <div class="contact-value-sub" data-i18n="contact.lAmbassadorsSub">{t('contact.lAmbassadorsSub')}</div>
+            </div>
+            <div class="contact-email-item">
+              <div class="contact-email-tag" data-i18n="contact.lInfo">{t('contact.lInfo')}</div>
+              <div class="contact-value">
+                <a href="mailto:info@naturizable.com">info@naturizable.com</a>
+              </div>
+              <div class="contact-value-sub" data-i18n="contact.lInfoSub">{t('contact.lInfoSub')}</div>
+            </div>
+            <div class="contact-email-item">
+              <div class="contact-email-tag" data-i18n="contact.lSales">{t('contact.lSales')}</div>
+              <div class="contact-value">
+                <a href="mailto:ventas@naturizable.com">ventas@naturizable.com</a>
+              </div>
+              <div class="contact-value-sub" data-i18n="contact.lSalesSub">{t('contact.lSalesSub')}</div>
+            </div>
           </div>
         </div>
-        <div class="contact-row">
-          <div class="contact-label" data-i18n="contact.lAmbassadors">{t('contact.lAmbassadors')}</div>
-          <div>
-            <div class="contact-value">
-              <a href="mailto:embajadores@naturizable.com">embajadores@naturizable.com</a>
-            </div>
-            <div class="contact-value-sub" data-i18n="contact.lAmbassadorsSub">{t('contact.lAmbassadorsSub')}</div>
-          </div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-label" data-i18n="contact.lInfo">{t('contact.lInfo')}</div>
-          <div>
-            <div class="contact-value">
-              <a href="mailto:info@naturizable.com">info@naturizable.com</a>
-            </div>
-            <div class="contact-value-sub" data-i18n="contact.lInfoSub">{t('contact.lInfoSub')}</div>
-          </div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-label" data-i18n="contact.lSales">{t('contact.lSales')}</div>
-          <div>
-            <div class="contact-value">
-              <a href="mailto:ventas@naturizable.com">ventas@naturizable.com</a>
-            </div>
-            <div class="contact-value-sub" data-i18n="contact.lSalesSub">{t('contact.lSalesSub')}</div>
-          </div>
-        </div>
+
       </div>
+
+      <!-- ── RIGHT: QR WhatsApp ── -->
       <div class="contact-qr">
         <div class="contact-qr-frame">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&bgcolor=ffffff&color=0F3D2E&margin=15&data=https%3A%2F%2Fnaturizable.com" alt="QR · naturizable.com" />
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&bgcolor=ffffff&color=0F3D2E&margin=15&data=https%3A%2F%2Fwa.me%2F524431151629"
+            alt="QR · WhatsApp Naturizable"
+            loading="lazy"
+          />
         </div>
         <div class="contact-qr-label" data-i18n="contact.qrLabel">{t('contact.qrLabel')}</div>
         <div class="contact-qr-sub" data-i18n="contact.qrSub">{t('contact.qrSub')}</div>
-        <div class="contact-qr-url">naturizable.com</div>
+        <a href="https://wa.me/524431151629" target="_blank" class="contact-qr-url contact-qr-wa">
+          +52 443 115 1629
+          <span class="contact-qr-wa-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </span>
+        </a>
       </div>
+
     </div>
   </div>
 </section>

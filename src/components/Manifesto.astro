@@ -4,11 +4,11 @@ import { t } from '../i18n/ui';
 <section class="intro-block" id="manifiesto">
   <div class="container">
     <div class="intro-grid">
-      <div class="reveal">
+      <div class="reveal-left">
         <div class="intro-eyebrow" data-i18n="manifesto.eyebrow">{t('manifesto.eyebrow')}</div>
         <h2 class="intro-title" data-i18n="manifesto.title" set:html={t('manifesto.title')} />
       </div>
-      <div class="intro-body reveal">
+      <div class="intro-body reveal-right" style="--delay:.1s">
         <p data-i18n="manifesto.p1">{t('manifesto.p1')}</p>
         <p data-i18n="manifesto.p2" set:html={t('manifesto.p2')} />
         <p data-i18n="manifesto.p3" set:html={t('manifesto.p3')} />

@@ -5,9 +5,12 @@ interface Props {
 }
 
 const {
-  title = '100% Naturizable® · Plant-based packaging from Mexico',
-  description = 'The next generation of plant-based packaging. Cellulose tray that nature can take back. Swiss engineering, made in Mexico.',
+  title = 'Charola 855 - Empaque Compostable 100% Natural | Naturizable',
+  description = 'Charola 855: empaque de fibra de celulosa compostable, FDA-approved, sin plástico ni PFAS. Barrera anti-grasa 90 min para carnicería, frutería y food service. Hecho en México con ingeniería suiza.',
 } = Astro.props;
+
+const siteUrl = 'https://naturizable.com';
+const ogImage = 'https://res.cloudinary.com/ddtjwooiz/image/upload/c_fill,w_1200,h_630,f_auto,q_auto/naturizable/products/charola-hero';
 ---
 
 <!doctype html>
@@ -17,12 +20,218 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" is:inline></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" is:inline></script>
+    <meta name="keywords" content="charola compostable, empaque biodegradable, empaque sin plástico, fibra de celulosa, empaques carnicería, food service, charola 855, compostable México, alternativa foam, plant-based packaging" />
+    <meta name="author" content="100% Naturizable · Grupo Ortiz México" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="google0df401e11b557714" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={siteUrl} />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="es" href={siteUrl} />
+    <link rel="alternate" hreflang="es-MX" href={siteUrl} />
+    <link rel="alternate" hreflang="en" href={siteUrl} />
+    <link rel="alternate" hreflang="en-US" href={siteUrl} />
+    <link rel="alternate" hreflang="x-default" href={siteUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="100% Naturizable" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content="Charola 855 - Empaque Compostable 100% Natural | Naturizable" />
+    <meta property="og:description" content="Empaque de fibra de celulosa compostable sin plástico ni PFAS. Barrera anti-grasa FDA-approved para carnicería, frutería y food service. Hecho en México." />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Charola 855 - Empaque compostable de fibra de celulosa" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@naturizable" />
+    <meta name="twitter:title" content="Charola 855 - Empaque Compostable | Naturizable" />
+    <meta name="twitter:description" content="Empaque de fibra de celulosa compostable. FDA-approved, sin plástico ni PFAS. Para carnicería y food service." />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">{JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "100% Naturizable",
+      "alternateName": "Naturizable",
+      "url": siteUrl,
+      "logo": `${siteUrl}/favicon.svg`,
+      "description": "Primera marca mexicana de empaque plant-based 100% natural. Charola 855 compostable, FDA-approved, sin plástico ni PFAS.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Belisario Domínguez 30",
+        "addressLocality": "Morelia",
+        "addressRegion": "Michoacán",
+        "postalCode": "58000",
+        "addressCountry": "MX"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "telephone": "+52-443-207-2593",
+        "email": "ventas@naturizable.com"
+      },
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "Grupo Ortiz México"
+      }
+    })}</script>
+
+    <!-- JSON-LD: Product -->
+    <script type="application/ld+json">{JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Charola 855",
+      "alternateName": ["Charola de Fibra de Celulosa 855", "Tray 855"],
+      "description": "Charola de fibra de celulosa 100% compostable y biodegradable. Barrera anti-grasa FDA-approved, sin PFAS ni plásticos. Para carnicería, frutería y food service. 10 paquetes / 510 piezas por caja.",
+      "image": ogImage,
+      "brand": { "@type": "Brand", "name": "100% Naturizable" },
+      "manufacturer": { "@type": "Organization", "name": "Grupo Ortiz México", "url": siteUrl },
+      "material": "Fibra de celulosa pura",
+      "keywords": "charola compostable, empaque biodegradable, fibra celulosa, sin plástico, FDA, carnicería, frutería, food service",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "MXN",
+        "availability": "https://schema.org/InStock",
+        "seller": { "@type": "Organization", "name": "100% Naturizable" }
+      }
+    })}</script>
+
+    <!-- JSON-LD: FAQ -->
+    <script type="application/ld+json">{JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué es la Charola 855?",
+          "acceptedAnswer": { "@type": "Answer", "text": "La Charola 855 es un empaque de fibra de celulosa 100% compostable, sin plástico ni PFAS, con barrera anti-grasa FDA-approved. Ideal para carnicería, frutería y food service. Se vende en cajas de 10 paquetes / 510 piezas." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es la Charola 855 compostable y reciclable?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sí. La Charola 855 es compostable a nivel industrial y reciclable junto con papel. No contiene PFAS, plásticos ni recubrimientos sintéticos." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Dónde puedo comprar o cotizar la Charola 855?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Escribe a ventas@naturizable.com o llama al +52 (443) 207-2593. También puedes contactarnos por WhatsApp al +52 443 115 1629." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Dónde está ubicado Naturizable?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Naturizable está en Belisario Domínguez 30, Morelia, Michoacán, México. Parte de Grupo Ortiz México." }
+        }
+      ]
+    })}</script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg" />
+
+    <!-- Cloudinary CDN preconnect -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+
+    <!-- Preload fuente crítica -->
+    <link rel="preload" href="/fonts/Morganite-Bold.ttf" as="font" type="font/ttf" crossorigin />
   </head>
   <body>
     <slot />
+
+    <!-- ── Admin gate (Ctrl+K / Cmd+K) ── -->
+    <div id="adminGate" role="dialog" aria-modal="true" aria-label="Admin Access" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(10,42,31,.55);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem">
+      <div style="background:#fff;border:1px solid rgba(10,42,31,.13);border-radius:18px;width:100%;max-width:400px;box-shadow:0 24px 56px rgba(10,42,31,.22);overflow:hidden;animation:slideIn .18s ease">
+        <!-- Header strip -->
+        <div style="background:#0F3D2E;padding:.9rem 1.3rem;display:flex;align-items:center;gap:12px">
+          <img src="https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg" alt="Naturizable" style="width:34px;height:34px;border-radius:50%;flex-shrink:0" />
+          <div>
+            <div style="font-size:.88rem;font-weight:700;color:#fff;font-family:inherit">100% Naturizable</div>
+            <div style="font-size:.7rem;color:rgba(255,255,255,.5);font-family:inherit">Panel de administración</div>
+          </div>
+          <kbd style="margin-left:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:2px 7px;font-size:.63rem;color:rgba(255,255,255,.45);font-family:inherit">Esc</kbd>
+        </div>
+        <!-- Form -->
+        <div style="padding:1.2rem 1.4rem 1.4rem">
+          <label for="ag-user" style="display:block;font-size:.63rem;font-weight:700;color:#7C8A82;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-family:inherit">Usuario</label>
+          <input id="ag-user" type="text" autocomplete="username" placeholder="admin" style="width:100%;background:#F4EEDE;border:1px solid rgba(10,42,31,.15);border-radius:9px;padding:.65rem .95rem;color:#0A2A1F;font-size:.9rem;outline:none;margin-bottom:.85rem;transition:border-color .15s,box-shadow .15s;font-family:inherit" />
+          <label for="ag-pass" style="display:block;font-size:.63rem;font-weight:700;color:#7C8A82;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-family:inherit">Contraseña</label>
+          <input id="ag-pass" type="password" autocomplete="current-password" style="width:100%;background:#F4EEDE;border:1px solid rgba(10,42,31,.15);border-radius:9px;padding:.65rem .95rem;color:#0A2A1F;font-size:.9rem;outline:none;margin-bottom:1rem;transition:border-color .15s,box-shadow .15s;font-family:inherit" />
+          <button id="ag-btn" style="width:100%;padding:.78rem;background:#0F3D2E;color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .15s;font-family:inherit">Entrar al dashboard →</button>
+          <div id="ag-err" style="display:none;margin-top:.75rem;padding:.6rem .85rem;background:#fef2f2;border:1px solid #fecaca;border-radius:7px;color:#b91c1c;font-size:.78rem;font-family:inherit">Credenciales incorrectas.</div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      @keyframes slideIn { from { opacity:0; transform:translateY(-10px) scale(.97) } to { opacity:1; transform:none } }
+      #ag-user:focus, #ag-pass:focus { border-color:#1F5C44 !important; box-shadow:0 0 0 3px rgba(31,92,68,.1) !important; }
+      #ag-btn:hover { background:#1F5C44 !important; }
+    </style>
+
+    <script>
+      (function () {
+        const gate   = document.getElementById('adminGate');
+        const user   = document.getElementById('ag-user');
+        const pass   = document.getElementById('ag-pass');
+        const btn    = document.getElementById('ag-btn');
+        const errEl  = document.getElementById('ag-err');
+        if (!gate) return;
+
+        function open()  {
+          gate.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+          user.focus();
+          errEl.style.display = 'none';
+        }
+        function close() {
+          gate.style.display = 'none';
+          document.body.style.overflow = '';
+          user.value = '';
+          pass.value = '';
+        }
+
+        document.addEventListener('keydown', e => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            gate.style.display === 'flex' ? close() : open();
+          }
+          if (e.key === 'Escape' && gate.style.display === 'flex') close();
+        });
+
+        gate.addEventListener('click', e => { if (e.target === gate) close(); });
+
+        async function login() {
+          errEl.style.display = 'none';
+          btn.textContent = 'Verificando…';
+          btn.disabled = true;
+          try {
+            const res = await fetch('/api/admin/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: user.value.trim(), password: pass.value }),
+            });
+            if (res.ok) { window.location.href = '/admin'; }
+            else        { errEl.style.display = 'block'; btn.textContent = 'Entrar →'; btn.disabled = false; }
+          } catch {
+            errEl.textContent = 'Error de conexión.';
+            errEl.style.display = 'block';
+            btn.textContent = 'Entrar →';
+            btn.disabled = false;
+          }
+        }
+
+        btn.addEventListener('click', login);
+        [user, pass].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') login(); }));
+      })();
+    </script>
   </body>
 </html>

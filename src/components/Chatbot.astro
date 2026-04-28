@@ -12,20 +12,29 @@ import { t } from '../i18n/ui';
   </button>
   <div class="chatbot-window">
     <div class="chatbot-header">
-      <div class="chatbot-avatar">N</div>
+      <div class="chatbot-avatar">B</div>
       <div class="chatbot-header-info">
-        <div class="chatbot-name">Naty</div>
+        <div class="chatbot-name">Bot855</div>
         <div class="chatbot-status" data-i18n="chatbot.status">{t('chatbot.status')}</div>
       </div>
       <button class="chatbot-close" id="chatbotClose" aria-label="Cerrar chat">×</button>
     </div>
-    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-body" id="chatbotBody">
+      <div class="chat-msg bot">¡Hola! Soy <strong>Bot855</strong>, asistente de Naturizable. ¿En qué te puedo ayudar?</div>
+      <div class="chat-quick-replies" id="chatInitialReplies">
+        <button class="chat-quick-reply" type="button">¿Qué es Naturizable?</button>
+        <button class="chat-quick-reply" type="button">¿Cómo pido muestras?</button>
+        <button class="chat-quick-reply" type="button">¿Dónde están?</button>
+        <button class="chat-quick-reply" type="button">Hablar con ventas</button>
+      </div>
+    </div>
     <form class="chatbot-input" id="chatbotForm">
-      <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" />
+      <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta…" autocomplete="off" />
       <button type="submit" aria-label="Enviar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
       </button>
     </form>
-    <div class="chatbot-footer" data-i18n="chatbot.poweredBy">{t('chatbot.poweredBy')}</div>
   </div>
 </div>
+
+<script src="../scripts/chat.js"></script>

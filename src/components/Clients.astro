@@ -3,11 +3,13 @@ import { t } from '../i18n/ui';
 ---
 <section class="logo-cloud-section">
   <div class="container" style="text-align:center; margin-bottom:2rem">
-    <div class="logo-cloud-eyebrow" data-i18n="clients.eyebrow">{t('clients.eyebrow')}</div>
-    <h2 class="logo-cloud-title" data-i18n="clients.title" set:html={t('clients.title')} />
+    <div class="reveal">
+      <div class="logo-cloud-eyebrow" data-i18n="clients.eyebrow">{t('clients.eyebrow')}</div>
+      <h2 class="logo-cloud-title" data-i18n="clients.title" set:html={t('clients.title')} />
+    </div>
   </div>
 
-  <div class="logo-cloud-track-wrap">
+  <div class="logo-cloud-track-wrap reveal-fade" style="--delay:.2s">
     <div class="logo-cloud-fade logo-cloud-fade-l"></div>
     <div class="logo-cloud-fade logo-cloud-fade-r"></div>
     <div class="logo-cloud-track" id="logoTrack">

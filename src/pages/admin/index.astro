@@ -1,0 +1,675 @@
+---
+export const prerender = false;
+
+import { isValidToken, getTokenFromCookies } from '../../lib/adminAuth';
+import { getDB } from '../../lib/db';
+
+const token = getTokenFromCookies(Astro.request.headers.get('cookie'));
+if (!(await isValidToken(token))) {
+  return Astro.redirect('/admin/login');
+}
+
+// ── Fetch all stats in parallel ─────────────────────────────────
+const db    = await getDB();
+const today = new Date().toISOString().slice(0, 10);
+
+const startDate = new Date();
+startDate.setDate(startDate.getDate() - 13);
+const startDateStr = startDate.toISOString().slice(0, 10);
+
+const [statsRes, todayRes, waRes, activityRes, keywordsRes] = await Promise.all([
+  db.execute(`
+    SELECT COUNT(DISTINCT session_id) as total_sessions,
+           COUNT(CASE WHEN role='user' THEN 1 END) as total_user_msgs
+    FROM chat_messages
+  `),
+  db.execute({ sql: `SELECT COUNT(*) as cnt FROM chat_messages WHERE role='user' AND date=?`, args: [today] }),
+  db.execute(`SELECT COUNT(*) as cnt FROM chat_messages WHERE role='bot' AND content LIKE '%[WA]%'`),
+  db.execute({
+    sql:  `SELECT date, COUNT(*) as cnt FROM chat_messages WHERE role='user' AND date >= ? GROUP BY date ORDER BY date`,
+    args: [startDateStr],
+  }),
+  db.execute(`SELECT content FROM chat_messages WHERE role='user' ORDER BY timestamp DESC LIMIT 600`),
+]);
+
+const totalSessions     = Number(statsRes.rows[0]?.total_sessions  ?? 0);
+const totalUserMessages = Number(statsRes.rows[0]?.total_user_msgs ?? 0);
+const todayMessages     = Number(todayRes.rows[0]?.cnt             ?? 0);
+const waIntents         = Number(waRes.rows[0]?.cnt                ?? 0);
+
+// Build 14-day array (fill zeros for missing dates)
+const last14: string[] = [];
+for (let i = 13; i >= 0; i--) {
+  const d = new Date(); d.setDate(d.getDate() - i);
+  last14.push(d.toISOString().slice(0, 10));
+}
+const actMap  = new Map(activityRes.rows.map(r => [String(r.date), Number(r.cnt)]));
+const msgPerDay = last14.map(date => ({ date, count: actMap.get(date) ?? 0 }));
+
+// Top keywords
+const stopWords = new Set([
+  'que','de','en','y','a','el','la','los','las','un','una','unos','unas',
+  'es','son','por','con','para','me','se','te','lo','le','su','sus','mi',
+  'más','como','si','no','pero','hay','del','al','este','esta','esto',
+  'también','muy','qué','cómo','cuál','dónde','cuándo','quién',
+  'the','is','are','can','do','i','you','we','it','of','in','and','or',
+  'to','have','has','be','what','how','where','when','who','which',
+  'would','could','should','also','some','any','not','than','that','this',
+  'with','from','about','your','our','their','was','were','will','get',
+  'hola','hello','hi','buenas','hey','ok','okay','gracias','thanks',
+  'quiero','quisiera','necesito','tengo','puede','puedo','soy','están',
+  'está','estoy','tiene','tienen','please','favor',
+]);
+const wordFreq: Record<string, number> = {};
+for (const row of keywordsRes.rows) {
+  const words = String(row.content).toLowerCase()
+    .replace(/[^\wáéíóúñü\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 3 && !stopWords.has(w));
+  for (const w of words) wordFreq[w] = (wordFreq[w] ?? 0) + 1;
+}
+const topKeywords = Object.entries(wordFreq).sort((a, b) => b[1] - a[1]).slice(0, 12);
+
+// ── Sessions (last 25) with messages ────────────────────────────
+const sessionsRes = await db.execute(`
+  SELECT session_id,
+         MIN(date) as start_date,
+         MAX(timestamp) as last_ts,
+         COUNT(CASE WHEN role='user' THEN 1 END) as user_count
+  FROM chat_messages
+  GROUP BY session_id
+  ORDER BY last_ts DESC
+  LIMIT 25
+`);
+
+interface SessionRow { id: string; date: string; userCount: number; preview: string; messages: { role: string; content: string }[] }
+let sessions: SessionRow[] = [];
+
+if (sessionsRes.rows.length > 0) {
+  const sids = sessionsRes.rows.map(r => String(r.session_id));
+  const placeholders = sids.map(() => '?').join(',');
+  const msgsRes = await db.execute({
+    sql:  `SELECT session_id, role, content, timestamp FROM chat_messages WHERE session_id IN (${placeholders}) ORDER BY timestamp`,
+    args: sids,
+  });
+
+  const msgsBySession = new Map<string, { role: string; content: string }[]>();
+  for (const r of msgsRes.rows) {
+    const sid = String(r.session_id);
+    if (!msgsBySession.has(sid)) msgsBySession.set(sid, []);
+    msgsBySession.get(sid)!.push({ role: String(r.role), content: String(r.content) });
+  }
+
+  sessions = sessionsRes.rows.map(r => {
+    const sid  = String(r.session_id);
+    const msgs = msgsBySession.get(sid) ?? [];
+    const first = msgs.find(m => m.role === 'user');
+    return {
+      id:        sid,
+      date:      String(r.start_date),
+      userCount: Number(r.user_count),
+      preview:   first?.content.slice(0, 85) ?? '—',
+      messages:  msgs,
+    };
+  });
+}
+
+const LOGO = 'https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg';
+
+const chartActivity = {
+  labels: msgPerDay.map(d => d.date.slice(5)),
+  data:   msgPerDay.map(d => d.count),
+};
+const chartKeywords = {
+  labels: topKeywords.map(([w]) => w),
+  data:   topKeywords.map(([, c]) => c),
+};
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Bot855 Dashboard</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href={LOGO} />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #F4EEDE;
+      --bg-alt:    #EAE3CF;
+      --card:      #FFFFFF;
+      --dark:      #0F3D2E;
+      --dark2:     #1F5C44;
+      --ink:       #0A2A1F;
+      --soft:      #4A5A52;
+      --muted:     #7C8A82;
+      --gold:      #C9A56B;
+      --gold-deep: #A88550;
+      --line:      rgba(10,42,31,.13);
+      --sage:      #B8C9B5;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--dark);
+      padding: .9rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .logo-wrap img { width: 36px; height: 36px; border-radius: 50%; }
+    .logo-wrap h1 {
+      font-size: .95rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .04em;
+    }
+    .logo-wrap h1 span { color: var(--gold); }
+    .header-r { display: flex; align-items: center; gap: .9rem; }
+    .badge {
+      background: rgba(201,165,107,.18);
+      color: var(--gold);
+      font-size: .62rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.65);
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: .78rem;
+      cursor: pointer;
+      transition: .15s;
+      font-family: inherit;
+    }
+    .logout-btn:hover { border-color: rgba(255,255,255,.5); color: #fff; }
+
+    /* ── Main ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    .section-label {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      margin-bottom: .85rem;
+    }
+
+    /* ── Stat cards ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: .85rem; margin-bottom: 2rem; }
+    .stat-card  {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.3rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(10,42,31,.06);
+    }
+    .stat-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .4rem; }
+    .stat-value { font-size: 2.5rem; font-weight: 800; line-height: 1; color: var(--dark); }
+    .stat-card.hi .stat-value { color: var(--dark2); }
+    .stat-card.hi { border-left: 3px solid var(--gold); }
+
+    /* ── Charts ── */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-bottom: 2rem; }
+    @media (max-width: 720px) { .charts-grid { grid-template-columns: 1fr; } }
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.3rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(10,42,31,.06);
+    }
+    .chart-card h3 { font-size: .78rem; font-weight: 600; color: var(--soft); margin-bottom: 1.1rem; text-transform: uppercase; letter-spacing: .06em; }
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── Conversations ── */
+    .empty {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 3rem;
+      text-align: center;
+      color: var(--muted);
+    }
+    details {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: .45rem;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(10,42,31,.04);
+    }
+    details[open] { border-color: var(--dark2); }
+    summary {
+      padding: .9rem 1.1rem;
+      cursor: pointer;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 16px 1fr auto auto;
+      align-items: center;
+      gap: .85rem;
+      user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { background: rgba(10,42,31,.03); }
+    .chevron { color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+    details[open] .chevron { transform: rotate(90deg); }
+    .s-preview { font-size: .84rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
+    .s-date    { font-size: .7rem; color: var(--muted); white-space: nowrap; }
+    .s-count   { font-size: .67rem; font-weight: 700; background: rgba(31,92,68,.1); color: var(--dark2); padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+    .conv-body { padding: .25rem 1.1rem 1.1rem; }
+    .sid-tag   { font-family: monospace; font-size: .68rem; color: var(--muted); background: var(--bg-alt, #EAE3CF); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: .75rem; }
+    .msg       { display: flex; gap: 9px; margin-bottom: .5rem; align-items: flex-start; }
+    .msg-role  { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 3px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .msg.user .msg-role { background: rgba(31,92,68,.12); color: var(--dark2); }
+    .msg.bot  .msg-role { background: rgba(201,165,107,.18); color: var(--gold-deep); }
+    .msg-text  { font-size: .83rem; line-height: 1.55; color: var(--soft); }
+    .wa-tag    { display: inline-block; font-size: .6rem; font-weight: 700; background: rgba(31,92,68,.12); color: var(--dark2); padding: 1px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
+    hr.sep     { border: none; border-top: 1px solid var(--line); margin: .45rem 0; }
+
+    /* ── Navbar report dropdown ── */
+    .report-trigger { position: relative; }
+    .nav-report-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(201,165,107,.15);
+      border: 1px solid rgba(201,165,107,.45);
+      color: var(--gold);
+      padding: 5px 13px;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .nav-report-btn:hover { background: rgba(201,165,107,.28); border-color: rgba(201,165,107,.7); }
+    .nav-report-btn.open  { background: rgba(201,165,107,.28); border-color: rgba(201,165,107,.7); }
+    .report-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 310px;
+      background: #fff;
+      border: 1px solid rgba(10,42,31,.13);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem 1.3rem;
+      box-shadow: 0 14px 44px rgba(10,42,31,.18);
+      z-index: 200;
+    }
+    .report-dropdown.open { display: block; }
+    .rd-title {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .9rem;
+    }
+    .period-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .85rem;
+    }
+    .period-btn {
+      padding: .38rem .85rem;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--soft);
+      font-size: .76rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .12s, border-color .12s, color .12s;
+    }
+    .period-btn:hover { border-color: var(--dark2); color: var(--dark); }
+    .period-btn.active { background: var(--dark); border-color: var(--dark); color: #fff; }
+    .custom-dates {
+      display: none;
+      gap: .6rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: .85rem;
+    }
+    .custom-dates.visible { display: flex; }
+    .date-field { display: flex; flex-direction: column; gap: 3px; }
+    .date-field label { font-size: .62rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; }
+    .date-field input[type="date"] {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: .42rem .7rem;
+      color: var(--ink);
+      font-size: .8rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .date-field input[type="date"]:focus { border-color: var(--dark2); }
+    .gen-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: .6rem 1rem;
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-size: .84rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s, opacity .15s;
+      margin-top: .1rem;
+    }
+    .gen-btn:hover { background: var(--dark2); }
+    .gen-btn:disabled { opacity: .5; cursor: default; }
+    .rd-hint { font-size: .68rem; color: var(--muted); margin-top: .6rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src={LOGO} alt="Naturizable" />
+    <h1>100% <span>Naturizable</span> &mdash; Admin</h1>
+  </div>
+  <div class="header-r">
+    <span class="badge">Bot855</span>
+
+    <!-- Report dropdown trigger -->
+    <div class="report-trigger" id="reportTrigger">
+      <button class="nav-report-btn" id="reportNavBtn" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Reporte
+      </button>
+
+      <div class="report-dropdown" id="reportDropdown">
+        <p class="rd-title">Generar Reporte PDF</p>
+        <div class="period-btns">
+          <button class="period-btn active" data-period="7">7 días</button>
+          <button class="period-btn" data-period="30">30 días</button>
+          <button class="period-btn" data-period="90">3 meses</button>
+          <button class="period-btn" data-period="custom">Personalizado</button>
+        </div>
+        <div class="custom-dates" id="customDates">
+          <div class="date-field">
+            <label for="dateFrom">Desde</label>
+            <input type="date" id="dateFrom" />
+          </div>
+          <div class="date-field">
+            <label for="dateTo">Hasta</label>
+            <input type="date" id="dateTo" />
+          </div>
+        </div>
+        <button class="gen-btn" id="genReportBtn" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Generar y abrir PDF
+        </button>
+        <p class="rd-hint">Se abre en nueva pestaña para imprimir / guardar</p>
+      </div>
+    </div>
+
+    <form action="/api/admin/logout" method="POST" style="display:inline">
+      <button type="submit" class="logout-btn">Cerrar sesión</button>
+    </form>
+  </div>
+</header>
+
+<main>
+
+  <p class="section-label">Resumen general</p>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Conversaciones</div>
+      <div class="stat-value">{totalSessions}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mensajes de usuarios</div>
+      <div class="stat-value">{totalUserMessages}</div>
+    </div>
+    <div class="stat-card hi">
+      <div class="stat-label">Mensajes hoy</div>
+      <div class="stat-value">{todayMessages}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Intenciones WhatsApp</div>
+      <div class="stat-value">{waIntents}</div>
+    </div>
+  </div>
+
+  <p class="section-label">Analíticas</p>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Mensajes por día (últimos 14 días)</h3>
+      <div class="chart-wrap"><canvas id="actChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Palabras más frecuentes</h3>
+      <div class="chart-wrap"><canvas id="kwChart"></canvas></div>
+    </div>
+  </div>
+
+  <p class="section-label">Historial de conversaciones ({sessions.length} recientes)</p>
+  <div>
+    {sessions.length === 0 ? (
+      <div class="empty">
+        Aún no hay conversaciones en la base de datos.
+        <br /><small style="display:block;margin-top:.5rem">Los mensajes se guardan a partir del próximo deploy.</small>
+      </div>
+    ) : sessions.map(s => (
+      <details>
+        <summary>
+          <svg class="chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+          <span class="s-preview">{s.preview}</span>
+          <span class="s-date">{s.date}</span>
+          <span class="s-count">{s.userCount} msg</span>
+        </summary>
+        <div class="conv-body">
+          <span class="sid-tag">{s.id.slice(0, 18)}…</span>
+          {s.messages.map((m, i) => (
+            <>
+              {i > 0 && m.role === 'user' && <hr class="sep" />}
+              <div class={`msg ${m.role}`}>
+                <span class="msg-role">{m.role === 'user' ? 'Usuario' : 'Bot'}</span>
+                <span class="msg-text">
+                  <Fragment set:html={m.content.replace('[WA]', '')} />
+                  {m.role === 'bot' && m.content.includes('[WA]') && <span class="wa-tag">WhatsApp</span>}
+                </span>
+              </div>
+            </>
+          ))}
+        </div>
+      </details>
+    ))}
+  </div>
+
+</main>
+
+<script define:vars={{ chartActivity, chartKeywords }}>
+  const GREEN = '#1F5C44';
+  const GOLD  = '#C9A56B';
+  const GRID  = 'rgba(10,42,31,.1)';
+  const MUTED = '#7C8A82';
+
+  Chart.defaults.color = MUTED;
+  Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+
+  new Chart(document.getElementById('actChart'), {
+    type: 'bar',
+    data: {
+      labels: chartActivity.labels,
+      datasets: [{ data: chartActivity.data, backgroundColor: 'rgba(31,92,68,.15)', borderColor: GREEN, borderWidth: 1.5, borderRadius: 5 }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: GRID }, ticks: { font: { size: 11 } } },
+        y: { grid: { color: GRID }, ticks: { font: { size: 11 }, stepSize: 1, precision: 0 }, beginAtZero: true },
+      },
+    },
+  });
+
+  new Chart(document.getElementById('kwChart'), {
+    type: 'bar',
+    data: {
+      labels: chartKeywords.labels,
+      datasets: [{ data: chartKeywords.data, backgroundColor: 'rgba(201,165,107,.2)', borderColor: GOLD, borderWidth: 1.5, borderRadius: 5 }],
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: GRID }, ticks: { font: { size: 11 }, stepSize: 1, precision: 0 }, beginAtZero: true },
+        y: { grid: { color: GRID }, ticks: { font: { size: 11 } } },
+      },
+    },
+  });
+</script>
+
+<script>
+  // ── Navbar report dropdown ────────────────────────────────────
+  const reportNavBtn  = document.getElementById('reportNavBtn');
+  const reportDropdown = document.getElementById('reportDropdown');
+  const periodBtns    = document.querySelectorAll('.period-btn');
+  const customDates   = document.getElementById('customDates');
+  const dateFrom      = document.getElementById('dateFrom');
+  const dateTo        = document.getElementById('dateTo');
+  const genBtn        = document.getElementById('genReportBtn');
+
+  let selectedPeriod = '7';
+
+  // Default custom dates
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const ago30    = new Date(); ago30.setDate(ago30.getDate() - 30);
+  dateFrom.value = ago30.toISOString().slice(0, 10);
+  dateTo.value   = todayISO;
+
+  // Toggle dropdown
+  reportNavBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = reportDropdown.classList.toggle('open');
+    reportNavBtn.classList.toggle('open', open);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('reportTrigger').contains(e.target)) {
+      reportDropdown.classList.remove('open');
+      reportNavBtn.classList.remove('open');
+    }
+  });
+
+  // Period selection
+  periodBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      periodBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedPeriod = btn.dataset.period;
+      customDates.classList.toggle('visible', selectedPeriod === 'custom');
+    });
+  });
+
+  // Generate report
+  genBtn.addEventListener('click', async () => {
+    let from, to;
+    to = new Date().toISOString().slice(0, 10);
+
+    if (selectedPeriod === 'custom') {
+      from = dateFrom.value;
+      to   = dateTo.value;
+      if (!from || !to) { alert('Selecciona las fechas de inicio y fin.'); return; }
+    } else {
+      const d = new Date();
+      d.setDate(d.getDate() - Number(selectedPeriod));
+      from = d.toISOString().slice(0, 10);
+    }
+
+    genBtn.disabled = true;
+    genBtn.textContent = 'Generando reporte…';
+
+    try {
+      // Step 1: get the report HTML
+      const reportRes = await fetch('/api/admin/report', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ from, to }),
+      });
+      if (!reportRes.ok) { alert('Error al generar el reporte: ' + await reportRes.text()); return; }
+      const html = await reportRes.text();
+
+      // Step 2: convert to PDF via Puppeteer
+      genBtn.textContent = 'Exportando PDF…';
+      const today    = new Date().toISOString().slice(0, 10);
+      const filename = `reporte-bot855-${from}_${to}.pdf`;
+
+      const pdfRes = await fetch('/api/export-pdf', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ html, filename }),
+      });
+
+      if (!pdfRes.ok) {
+        const err = await pdfRes.json().catch(() => ({ error: 'Error desconocido' }));
+        alert('Error al exportar PDF: ' + err.error);
+        return;
+      }
+
+      // Download the PDF
+      const blob = await pdfRes.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+
+      reportDropdown.classList.remove('open');
+      reportNavBtn.classList.remove('open');
+    } catch (e) {
+      alert('Error de conexión: ' + e.message);
+    } finally {
+      genBtn.disabled = false;
+      genBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Generar y abrir PDF';
+    }
+  });
+</script>
+
+</body>
+</html>

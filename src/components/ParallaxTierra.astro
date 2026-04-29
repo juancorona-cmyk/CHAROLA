@@ -55,32 +55,28 @@ import { ASSETS } from '../lib/cloudinary';
   .plx-sellos-container {
     position: absolute;
     left: 50%;
-    bottom: 72%; /* Mucho más arriba para evitar la planta */
+    /* clamp: sube menos en pantallas pequeñas, más en grandes */
+    bottom: clamp(48%, 8vh + 38%, 68%);
     transform: translateX(-50%);
     display: flex;
-    gap: 6rem; /* Más espacio para sellos más grandes */
+    gap: clamp(1.2rem, 4vw, 6rem);
     z-index: 2;
     will-change: transform, opacity;
   }
   .plx-sello {
-    width: 150px; /* Tamaño aumentado para PC */
+    /* escala fluida: 70px en pantallas chicas, 130px en grandes */
+    width: clamp(70px, 9vw, 130px);
     height: auto;
-    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
   }
-  @media (max-width: 1024px) {
-    .plx-sello {
-      width: 120px;
-      gap: 4rem;
-    }
+  /* pantallas PC medianas (1024–1280px) */
+  @media (max-width: 1280px) {
+    .plx-sellos-container { bottom: clamp(46%, 6vh + 34%, 58%); }
+    .plx-sello            { width: clamp(70px, 8vw, 110px); }
   }
   @media (max-width: 768px) {
-    .plx-sellos-container {
-      gap: 2rem;
-      bottom: 65%;
-    }
-    .plx-sello {
-      width: 75px;
-    }
+    .plx-sellos-container { gap: 1.5rem; bottom: 44%; }
+    .plx-sello            { width: clamp(60px, 14vw, 90px); }
   }
 </style>
 

@@ -77,41 +77,61 @@ import { ASSETS } from '../lib/cloudinary';
   const fill  = document.getElementById('enpBarFill');
   if (!video || !track) return;
 
-  // Unlock video on first touch (iOS)
-  document.addEventListener('touchstart', () => {
-    video!.play().then(() => video!.pause()).catch(() => {});
-  }, { once: true, passive: true });
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-  let targetProgress = 0;
+  // ── iOS unlock: necesita gesto del usuario para poder hacer seek ──
+  let unlocked = false;
+  function unlock() {
+    if (unlocked) return;
+    unlocked = true;
+    video!.play().then(() => {
+      video!.pause();
+      video!.currentTime = 0;
+    }).catch(() => {});
+  }
+  document.addEventListener('touchstart', unlock, { once: true, passive: true });
+  document.addEventListener('touchend',   unlock, { once: true, passive: true });
+
+  let targetProgress  = 0;
   let currentProgress = 0;
   let rafId: number | null = null;
   let isSeeking = false;
+  // Throttle seeks en móvil para evitar que se disparen demasiado rápido
+  let lastSeekTime = 0;
+  const SEEK_INTERVAL = isMobile ? 80 : 0; // ms entre seeks en móvil
+
+  // Usa visualViewport si está disponible (más preciso en iOS con barra del browser)
+  function getViewH(): number {
+    return window.visualViewport?.height ?? window.innerHeight;
+  }
 
   function getProgress(): number {
     const rect   = track!.getBoundingClientRect();
     const trackH = track!.offsetHeight;
-    const winH   = window.innerHeight;
-    // Cap at 0.999 to avoid end-of-video glitch on the last frame
-    return Math.max(0, Math.min(0.999, -rect.top / (trackH - winH)));
+    const winH   = getViewH();
+    const total  = Math.max(1, trackH - winH);
+    return Math.max(0, Math.min(0.999, -rect.top / total));
   }
 
   function tick() {
     rafId = null;
-    // Lerp: ease toward target (0.12 = smooth but responsive)
-    currentProgress += (targetProgress - currentProgress) * 0.12;
+    // Lerp más lento en móvil para suavizar el momentum scroll de iOS
+    const factor = isMobile ? 0.08 : 0.12;
+    currentProgress += (targetProgress - currentProgress) * factor;
 
-    // Stop animating when close enough
     const delta = Math.abs(targetProgress - currentProgress);
     if (delta < 0.0002) currentProgress = targetProgress;
 
-    // Set video time only when ready and not mid-seek
+    // Seek con throttle en móvil
+    const now = performance.now();
     if (video!.duration && !isNaN(video!.duration) && !isSeeking) {
-      video!.currentTime = currentProgress * video!.duration;
+      if (!isMobile || now - lastSeekTime >= SEEK_INTERVAL) {
+        video!.currentTime = currentProgress * video!.duration;
+        lastSeekTime = now;
+      }
     }
 
     if (fill) fill.style.transform = `scaleX(${currentProgress})`;
-
-    // Keep animating until we reach the target
     if (delta > 0.0002) rafId = requestAnimationFrame(tick);
   }
 
@@ -120,11 +140,13 @@ import { ASSETS } from '../lib/cloudinary';
     if (rafId === null) rafId = requestAnimationFrame(tick);
   }
 
-  // Prevent queued seeks from stacking up
   video.addEventListener('seeking', () => { isSeeking = true; });
   video.addEventListener('seeked',  () => { isSeeking = false; });
-
   video.addEventListener('loadedmetadata', onScroll);
+
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Recalcular cuando cambia el tamaño del visualViewport (barra iOS aparece/desaparece)
+  window.visualViewport?.addEventListener('resize', onScroll);
 })();
 </script>

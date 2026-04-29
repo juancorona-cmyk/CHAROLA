@@ -9,8 +9,10 @@ const {
   description = 'Charola 855: empaque de fibra de celulosa compostable, FDA-approved, sin plástico ni PFAS. Barrera anti-grasa 90 min para carnicería, frutería y food service. Hecho en México con ingeniería suiza.',
 } = Astro.props;
 
+import { ASSETS, cld } from '../lib/cloudinary';
+
 const siteUrl = 'https://naturizable.com';
-const ogImage = 'https://res.cloudinary.com/ddtjwooiz/image/upload/c_fill,w_1200,h_630,f_auto,q_auto/naturizable/products/charola-hero';
+const ogImage = cld('naturizable/products/charola-hero', { transforms: 'c_fill,w_1200,h_630,f_auto,q_auto' });
 ---
 
 <!doctype html>
@@ -135,7 +137,7 @@ const ogImage = 'https://res.cloudinary.com/ddtjwooiz/image/upload/c_fill,w_1200
     })}</script>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="{ASSETS.logo}" />
 
     <!-- Cloudinary CDN preconnect -->
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
@@ -152,7 +154,7 @@ const ogImage = 'https://res.cloudinary.com/ddtjwooiz/image/upload/c_fill,w_1200
       <div style="background:#fff;border:1px solid rgba(10,42,31,.13);border-radius:18px;width:100%;max-width:400px;box-shadow:0 24px 56px rgba(10,42,31,.22);overflow:hidden;animation:slideIn .18s ease">
         <!-- Header strip -->
         <div style="background:#0F3D2E;padding:.9rem 1.3rem;display:flex;align-items:center;gap:12px">
-          <img src="https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg" alt="Naturizable" style="width:34px;height:34px;border-radius:50%;flex-shrink:0" />
+          <img src="{ASSETS.logo}" alt="Naturizable" style="width:34px;height:34px;border-radius:50%;flex-shrink:0" />
           <div>
             <div style="font-size:.88rem;font-weight:700;color:#fff;font-family:inherit">100% Naturizable</div>
             <div style="font-size:.7rem;color:rgba(255,255,255,.5);font-family:inherit">Panel de administración</div>
@@ -162,7 +164,7 @@ const ogImage = 'https://res.cloudinary.com/ddtjwooiz/image/upload/c_fill,w_1200
         <!-- Form -->
         <div style="padding:1.2rem 1.4rem 1.4rem">
           <label for="ag-user" style="display:block;font-size:.63rem;font-weight:700;color:#7C8A82;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-family:inherit">Usuario</label>
-          <input id="ag-user" type="text" autocomplete="username" placeholder="admin" style="width:100%;background:#F4EEDE;border:1px solid rgba(10,42,31,.15);border-radius:9px;padding:.65rem .95rem;color:#0A2A1F;font-size:.9rem;outline:none;margin-bottom:.85rem;transition:border-color .15s,box-shadow .15s;font-family:inherit" />
+          <input id="ag-user" type="text" autocomplete="username" placeholder="usuario" style="width:100%;background:#F4EEDE;border:1px solid rgba(10,42,31,.15);border-radius:9px;padding:.65rem .95rem;color:#0A2A1F;font-size:.9rem;outline:none;margin-bottom:.85rem;transition:border-color .15s,box-shadow .15s;font-family:inherit" />
           <label for="ag-pass" style="display:block;font-size:.63rem;font-weight:700;color:#7C8A82;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-family:inherit">Contraseña</label>
           <input id="ag-pass" type="password" autocomplete="current-password" style="width:100%;background:#F4EEDE;border:1px solid rgba(10,42,31,.15);border-radius:9px;padding:.65rem .95rem;color:#0A2A1F;font-size:.9rem;outline:none;margin-bottom:1rem;transition:border-color .15s,box-shadow .15s;font-family:inherit" />
           <button id="ag-btn" style="width:100%;padding:.78rem;background:#0F3D2E;color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .15s;font-family:inherit">Entrar al dashboard →</button>

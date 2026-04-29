@@ -1,4 +1,4 @@
-const CLOUD = 'ddtjwooiz';
+const CLOUD = import.meta.env.CLOUDINARY_CLOUD_NAME as string;
 
 type Type = 'image' | 'video';
 
@@ -18,6 +18,9 @@ export function cld(
 // ── Pre-built URLs for every project asset ─────────────────────────────────
 
 export const ASSETS = {
+  // Brand
+  logo: cld('charola/logo'),
+
   // Hero
   heroPlan: cld('naturizable/hero/plan'),
 

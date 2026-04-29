@@ -1,4 +1,4 @@
-const CLOUD = import.meta.env.CLOUDINARY_CLOUD_NAME as string;
+const CLOUD = (import.meta.env.CLOUDINARY_CLOUD_NAME as string) || 'ddtjwooiz';
 
 type Type = 'image' | 'video';
 

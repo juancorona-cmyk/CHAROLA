@@ -14,8 +14,12 @@ npm-debug.log*
 # Chatbot data (user conversations)
 data/
 
+# Netlify
+.netlify/
+
 # macOS
 .DS_Store
+**/.DS_Store
 
 # Editors
 .vscode/settings.json

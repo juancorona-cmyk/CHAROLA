@@ -1424,6 +1424,8 @@ body::before {
   object-fit: contain;
   object-position: bottom center;
   transform-origin: bottom center;
+  /* oculta por defecto — el JS la anima al hacer scroll */
+  transform: translateX(-50%) translateY(105%) scale(0.9);
   z-index: 3;
 }
 

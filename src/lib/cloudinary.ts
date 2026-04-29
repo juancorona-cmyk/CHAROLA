@@ -18,8 +18,8 @@ export function cld(
 // ── Pre-built URLs for every project asset ─────────────────────────────────
 
 export const ASSETS = {
-  // Brand
-  logo: cld('charola/logo'),
+  // Brand — SVG no debe tener f_auto (lo convierte a raster)
+  logo: cld('charola/logo', { transforms: 'f_svg,q_auto' }),
 
   // Hero
   heroPlan: cld('naturizable/hero/plan'),

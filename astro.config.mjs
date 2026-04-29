@@ -6,6 +6,8 @@ export default defineConfig({
   output: 'hybrid',
   adapter: netlify(),
 
+  server: { host: true },
+
   // Comprime HTML en producción
   compressHTML: true,
 

@@ -79,74 +79,86 @@ import { ASSETS } from '../lib/cloudinary';
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-  // ── iOS unlock: necesita gesto del usuario para poder hacer seek ──
+  // iOS unlock: necesita un gesto previo para poder hacer seek
   let unlocked = false;
   function unlock() {
     if (unlocked) return;
     unlocked = true;
-    video!.play().then(() => {
-      video!.pause();
-      video!.currentTime = 0;
-    }).catch(() => {});
+    video!.play().then(() => { video!.pause(); video!.currentTime = 0; }).catch(() => {});
   }
   document.addEventListener('touchstart', unlock, { once: true, passive: true });
-  document.addEventListener('touchend',   unlock, { once: true, passive: true });
 
-  let targetProgress  = 0;
-  let currentProgress = 0;
-  let rafId: number | null = null;
-  let isSeeking = false;
-  // Throttle seeks en móvil para evitar que se disparen demasiado rápido
-  let lastSeekTime = 0;
-  const SEEK_INTERVAL = isMobile ? 80 : 0; // ms entre seeks en móvil
-
-  // Usa visualViewport si está disponible (más preciso en iOS con barra del browser)
   function getViewH(): number {
     return window.visualViewport?.height ?? window.innerHeight;
   }
 
-  function getProgress(): number {
-    const rect   = track!.getBoundingClientRect();
-    const trackH = track!.offsetHeight;
-    const winH   = getViewH();
-    const total  = Math.max(1, trackH - winH);
-    return Math.max(0, Math.min(0.999, -rect.top / total));
+  function applyProgress(p: number) {
+    if (video!.duration && !isNaN(video!.duration)) {
+      video!.currentTime = p * video!.duration;
+    }
+    if (fill) fill.style.transform = `scaleX(${p})`;
   }
 
-  function tick() {
-    rafId = null;
-    // Lerp más lento en móvil para suavizar el momentum scroll de iOS
-    const factor = isMobile ? 0.08 : 0.12;
-    currentProgress += (targetProgress - currentProgress) * factor;
+  // ── DESKTOP: scroll-scrub con lerp suave ──────────────────────────────
+  if (!isMobile) {
+    let targetP  = 0;
+    let currentP = 0;
+    let rafId: number | null = null;
 
-    const delta = Math.abs(targetProgress - currentProgress);
-    if (delta < 0.0002) currentProgress = targetProgress;
-
-    // Seek con throttle en móvil
-    const now = performance.now();
-    if (video!.duration && !isNaN(video!.duration) && !isSeeking) {
-      if (!isMobile || now - lastSeekTime >= SEEK_INTERVAL) {
-        video!.currentTime = currentProgress * video!.duration;
-        lastSeekTime = now;
-      }
+    function getScrollProgress(): number {
+      const rect  = track!.getBoundingClientRect();
+      const total = Math.max(1, track!.offsetHeight - getViewH());
+      return Math.max(0, Math.min(0.999, -rect.top / total));
     }
 
-    if (fill) fill.style.transform = `scaleX(${currentProgress})`;
-    if (delta > 0.0002) rafId = requestAnimationFrame(tick);
+    function tick() {
+      rafId = null;
+      currentP += (targetP - currentP) * 0.12;
+      const delta = Math.abs(targetP - currentP);
+      if (delta < 0.0002) currentP = targetP;
+      applyProgress(currentP);
+      if (delta > 0.0002) rafId = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('scroll', () => {
+      targetP = getScrollProgress();
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    }, { passive: true });
+
+    video.addEventListener('loadedmetadata', () => applyProgress(getScrollProgress()));
+    window.visualViewport?.addEventListener('resize', () => {
+      targetP = getScrollProgress();
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    });
+    return;
   }
 
-  function onScroll() {
-    targetProgress = getProgress();
-    if (rafId === null) rafId = requestAnimationFrame(tick);
+  // ── MÓVIL: control directo por touchmove — sin inercia ───────────────
+  // El video solo avanza mientras el dedo toca la pantalla.
+  let progress     = 0;
+  let touchStartY  = 0;
+  let progressAtTouchStart = 0;
+
+  function getTrackTotal(): number {
+    return Math.max(1, track!.offsetHeight - getViewH());
   }
 
-  video.addEventListener('seeking', () => { isSeeking = true; });
-  video.addEventListener('seeked',  () => { isSeeking = false; });
-  video.addEventListener('loadedmetadata', onScroll);
+  document.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    progressAtTouchStart = progress;
+  }, { passive: true });
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    // Solo actúa cuando el track está visible en pantalla
+    const rect = track!.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > getViewH()) return;
 
-  // Recalcular cuando cambia el tamaño del visualViewport (barra iOS aparece/desaparece)
-  window.visualViewport?.addEventListener('resize', onScroll);
+    const dy    = touchStartY - e.touches[0].clientY; // positivo = bajar
+    const delta = dy / getTrackTotal();
+    progress    = Math.max(0, Math.min(0.999, progressAtTouchStart + delta));
+    applyProgress(progress);
+  }, { passive: true });
+
+  video.addEventListener('loadedmetadata', () => applyProgress(0));
 })();
 </script>

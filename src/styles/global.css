@@ -84,6 +84,15 @@
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* ── CONTENT PROTECTION ── */
 * { user-select: none; -webkit-user-select: none; -moz-user-select: none; }
 input, textarea, [contenteditable],
@@ -1337,28 +1346,23 @@ body::before {
 
 /* ── EMAIL LIST ── */
 .contact-emails-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0;
 }
 .contact-email-item {
-  padding: 1rem 1.2rem 1rem 0;
+  padding: 1.4rem 0;
   border-bottom: 1px solid var(--line);
 }
-.contact-email-item:nth-child(even) {
-  padding-left: 1.2rem;
-  padding-right: 0;
-  border-left: 1px solid var(--line);
-}
-.contact-email-item:nth-last-child(-n+2) { border-bottom: none; }
+.contact-email-item:last-child { border-bottom: none; }
 .contact-email-tag {
   font-size: .6rem; font-weight: 700;
   letter-spacing: .18em; text-transform: uppercase;
   color: var(--gold-deep); margin-bottom: .3rem;
 }
 .contact-emails-list .contact-value {
-  font-size: 2rem;
-  word-break: break-all;
+  font-size: 2.8rem;
+  word-break: break-word;
 }
 
 /* ── PARALLAX TIERRA ── */
@@ -1496,6 +1500,13 @@ body::before {
 .chatbot-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #5BC685; }
 .chatbot-close { background: none; border: none; color: var(--sage); font-size: 2rem; cursor: pointer; padding: .2rem .4rem; line-height: 1; transition: color .3s; }
 .chatbot-close:hover { color: var(--gold); }
+.chatbot-back {
+  display: none; background: none; border: none; color: var(--sage);
+  cursor: pointer; padding: .3rem .5rem .3rem 0; margin-right: .2rem;
+  flex-shrink: 0; transition: color .3s;
+}
+.chatbot-back:hover { color: var(--gold); }
+.chatbot-back svg { width: 20px; height: 20px; display: block; }
 .chatbot-body {
   flex: 1; overflow-y: auto; padding: 1.3rem;
   display: flex; flex-direction: column; gap: .7rem;
@@ -2028,10 +2039,6 @@ html.js-loaded .reveal-fade.in { opacity: 1; transform: none; }
   .footer-top { grid-template-columns: 1fr; gap: 2rem; }
   .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .contact-row { grid-template-columns: 1fr; gap: .4rem; padding: 1.6rem 0; }
-  .contact-emails-list { grid-template-columns: 1fr; }
-  .contact-email-item:nth-child(even) { padding-left: 0; border-left: none; }
-  .contact-email-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
-  .contact-email-item:last-child { border-bottom: none; }
   .contact-qr { position: static; }
 
   /* ── AMBASSADOR ── */
@@ -2063,29 +2070,34 @@ html.js-loaded .reveal-fade.in { opacity: 1; transform: none; }
 
   /* ── CHATBOT ── */
   .chatbot { bottom: 1rem; right: 1rem; }
-  .chatbot.open { top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; }
+  .chatbot.open { top: 0; left: 0; right: 0; bottom: 0; }
   .chatbot.open .chatbot-window {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
-    height: 100dvh;
-    height: 100vh;
+    height: auto;
     border-radius: 0;
     max-height: none;
   }
+  .chatbot.open .chatbot-header { padding-top: max(1.1rem, env(safe-area-inset-top)); }
+  .chatbot-close { display: none; }
+  .chatbot-back { display: flex; }
+  .chatbot-input { padding-bottom: max(.9rem, env(safe-area-inset-bottom)); }
 
   /* ── HERO V2 ── */
-  .hero-v2 { padding: 7rem 1.5rem 3rem; min-height: auto; text-align: center; }
-  .hero-v2-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .hero-v2-left { align-items: center; transform: none; opacity: 1; }
+  .hero-v2 { padding: 5rem 1.5rem 1.5rem; min-height: auto; text-align: center; }
+  .hero-v2-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .hero-v2-left { align-items: center; transform: none; opacity: 1; gap: 0.65rem; }
   .hero-v2-headline { font-size: clamp(3rem, 13vw, 5.5rem); }
   .hero-v2-pitch { max-width: 100%; margin: 0 auto; font-size: 0.82rem; line-height: 1.35; }
-  .hero-v2-right { height: 320px; overflow: visible; order: -1; }
-  .hero-v2-circle { width: 290px; height: 290px; }
-  .hero-v2-product { width: min(340px, 88%); }
+  .hero-v2-right { height: 260px; overflow: visible; order: -1; }
+  .hero-v2-circle { width: 240px; height: 240px; }
+  .hero-v2-product { width: min(300px, 84%); }
   .hero-v2-scroll { display: none; }
-  .hero-v2-stats { gap: 1.2rem; justify-content: center; width: 100%; }
-  .hero-v2-stat-num { font-size: 2.4rem; }
+  .hero-v2-stats { gap: 1rem; justify-content: center; width: 100%; }
+  .hero-v2-stat-num { font-size: 2.2rem; }
   .hero-v2-swiss-tag { bottom: 6%; right: 4%; padding: .4rem .7rem; transform: rotate(0); font-size: .72rem; }
-  .hero-v2-actions { flex-direction: column; align-items: center; width: 100%; gap: .75rem; }
+  .hero-v2-actions { flex-direction: column; align-items: center; width: 100%; gap: .6rem; }
   .hero-v2-actions .btn { width: 100%; justify-content: center; max-width: 380px; }
   .hero-headline { margin-bottom: 2rem; }
   .hero-media { margin-bottom: 2rem; }
@@ -2375,8 +2387,7 @@ html.lenis body { height: auto; }
 }
 
 @media (max-width: 768px) {
-  /* Pista más corta: evita que el scrub se dispare de más en móvil */
-  .enp-scrub-track  { height: 220vh; }
+  .enp-scrub-track  { height: 300vh; }
   /* dvh = dynamic viewport height: se adapta a la barra del browser en iOS */
   .enp-scrub-sticky { height: 100dvh; }
   .enp-video        { object-fit: cover; width: 100%; height: 100%; }

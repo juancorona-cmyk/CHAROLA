@@ -1,6 +1,7 @@
 (function () {
   const launcher      = document.getElementById('chatbotLauncher');
   const closeBtn      = document.getElementById('chatbotClose');
+  const backBtn       = document.getElementById('chatbotBack');
   const chatbot       = document.getElementById('chatbot');
   const form          = document.getElementById('chatbotForm');
   const input         = document.getElementById('chatbotInput');
@@ -123,6 +124,7 @@
   });
 
   closeBtn.addEventListener('click', () => chatbot.classList.remove('open'));
+  if (backBtn) backBtn.addEventListener('click', () => chatbot.classList.remove('open'));
 
   form.addEventListener('submit', e => {
     e.preventDefault();

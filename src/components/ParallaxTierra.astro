@@ -52,19 +52,19 @@ import { ASSETS } from '../lib/cloudinary';
 </section>
 
 <style>
-  /* ── Pantallas grandes: fila horizontal centrada ── */
+  /* ── Pantallas grandes >1280px: fila horizontal original ── */
   .plx-sellos-container {
     position: absolute;
     left: 50%;
-    bottom: clamp(48%, 8vh + 38%, 68%);
+    bottom: 68%;
     transform: translateX(-50%);
     display: flex;
-    gap: clamp(1.2rem, 4vw, 6rem);
+    gap: 6rem;
     z-index: 2;
     will-change: transform, opacity;
   }
   .plx-sello {
-    width: clamp(70px, 9vw, 130px);
+    width: 150px;
     height: auto;
     filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
   }

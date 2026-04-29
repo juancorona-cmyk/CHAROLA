@@ -114,7 +114,8 @@ if (sessionsRes.rows.length > 0) {
   });
 }
 
-const LOGO = 'https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg';
+import { ASSETS } from '../../lib/cloudinary';
+const LOGO = ASSETS.logo;
 
 const chartActivity = {
   labels: msgPerDay.map(d => d.date.slice(5)),

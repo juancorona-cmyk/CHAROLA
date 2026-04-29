@@ -4,7 +4,8 @@ import { getDB } from '../../../lib/db';
 
 export const prerender = false;
 
-const LOGO = 'https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg';
+import { ASSETS } from '../../../lib/cloudinary';
+const LOGO = ASSETS.logo;
 
 // ── Stop words ────────────────────────────────────────────────────────────────
 const STOP = new Set([

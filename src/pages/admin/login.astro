@@ -8,7 +8,8 @@ if (await isValidToken(token)) {
   return Astro.redirect('/admin');
 }
 
-const LOGO = 'https://res.cloudinary.com/ddtjwooiz/image/upload/v1777391322/charola/logo.svg';
+import { ASSETS } from '../../lib/cloudinary';
+const LOGO = ASSETS.logo;
 ---
 <!doctype html>
 <html lang="es">

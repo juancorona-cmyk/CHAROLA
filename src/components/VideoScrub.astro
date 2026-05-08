@@ -1,0 +1,410 @@
+---
+interface Props {
+  id?: string;
+  videoSrc: string;
+  introEyebrow?: string;
+  introTitle: string;
+  hint?: string;
+  chip1?: string;
+  chip2?: string;
+  watchLabel?: string;
+  outroEyebrow?: string;
+  outroTitle?: string;
+}
+
+const {
+  id = 'vs',
+  videoSrc,
+  introEyebrow = '',
+  introTitle,
+  hint = 'Sigue desplazando',
+  chip1,
+  chip2,
+  watchLabel = 'Míralo en acción',
+  outroEyebrow = '',
+  outroTitle = '',
+} = Astro.props;
+
+const trackId  = `${id}Track`;
+const videoId  = `${id}Video`;
+const fillId   = `${id}Fill`;
+---
+
+<div class="vs-wrap">
+
+  <!-- ── PANEL INTRO (sticky dark) ── -->
+  <div class="vs-panel vs-panel--dark">
+    <div class="vs-bg-grid"></div>
+    <div class="container">
+      <div class="vs-content reveal">
+        {introEyebrow && (
+          <div class="eyebrow" style="color:var(--gold);margin-bottom:1.5rem">
+            <span class="vs-dot"></span>
+            <span>{introEyebrow}</span>
+          </div>
+        )}
+        <h2 class="vs-headline" set:html={introTitle} />
+        <div class="vs-scroll-hint">
+          <span class="vs-scroll-dot"></span>
+          <span>{hint}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCRUB TRACK ── -->
+  <div class="vs-scrub-track" id={trackId}>
+    <div class="vs-scrub-sticky">
+      <video
+        id={videoId}
+        src={videoSrc}
+        muted
+        playsinline
+        preload="auto"
+        class="vs-video"
+      ></video>
+      <div class="vs-overlay">
+        <div class="vs-overlay-chips">
+          {chip1 && (
+            <span class="vs-chip">
+              <span class="vs-chip-dot"></span>
+              <span>{chip1}</span>
+            </span>
+          )}
+          {chip2 && (
+            <span class="vs-chip">
+              <span class="vs-chip-dot"></span>
+              <span>{chip2}</span>
+            </span>
+          )}
+        </div>
+        <div class="vs-overlay-foot">
+          <span class="vs-watch-label">{watchLabel}</span>
+          <div class="vs-bar-wrap">
+            <div class="vs-bar-fill" id={fillId}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL OUTRO (sticky cream) ── -->
+  {outroTitle && (
+    <div class="vs-panel vs-panel--cream">
+      <div class="container">
+        <div class="vs-content vs-content--center reveal">
+          {outroEyebrow && (
+            <div class="eyebrow" style="justify-content:center;margin-bottom:1.5rem">
+              <span class="vs-dot" style="background:var(--gold)"></span>
+              <span>{outroEyebrow}</span>
+            </div>
+          )}
+          <h2 class="vs-headline vs-headline--dark" set:html={outroTitle} />
+        </div>
+      </div>
+    </div>
+  )}
+
+</div>
+
+<script define:vars={{ trackId, videoId, fillId }}>
+(function () {
+  const video = document.getElementById(videoId);
+  const track = document.getElementById(trackId);
+  const fill  = document.getElementById(fillId);
+  if (!video || !track) return;
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  let unlocked = false;
+  function unlock() {
+    if (unlocked) return;
+    unlocked = true;
+    video.play().then(() => { video.pause(); video.currentTime = 0; }).catch(() => {});
+  }
+  document.addEventListener('touchstart', unlock, { once: true, passive: true });
+
+  function getViewH() {
+    return window.visualViewport?.height ?? window.innerHeight;
+  }
+
+  function applyProgress(p) {
+    if (video.duration && !isNaN(video.duration)) {
+      video.currentTime = p * video.duration;
+    }
+    if (fill) fill.style.transform = `scaleX(${p})`;
+  }
+
+  if (!isMobile) {
+    let targetP  = 0;
+    let currentP = 0;
+    let rafId    = null;
+
+    function getScrollProgress() {
+      const rect  = track.getBoundingClientRect();
+      const total = Math.max(1, track.offsetHeight - getViewH());
+      return Math.max(0, Math.min(0.999, -rect.top / total));
+    }
+
+    function tick() {
+      rafId = null;
+      currentP += (targetP - currentP) * 0.12;
+      const delta = Math.abs(targetP - currentP);
+      if (delta < 0.0002) currentP = targetP;
+      applyProgress(currentP);
+      if (delta > 0.0002) rafId = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('scroll', () => {
+      targetP = getScrollProgress();
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    }, { passive: true });
+
+    video.addEventListener('loadedmetadata', () => applyProgress(getScrollProgress()));
+    window.visualViewport?.addEventListener('resize', () => {
+      targetP = getScrollProgress();
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    });
+    return;
+  }
+
+  let progress             = 0;
+  let touchStartY          = 0;
+  let progressAtTouchStart = 0;
+
+  function getTrackTotal() {
+    return Math.max(1, track.offsetHeight - getViewH());
+  }
+
+  document.addEventListener('touchstart', (e) => {
+    touchStartY          = e.touches[0].clientY;
+    progressAtTouchStart = progress;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    const rect = track.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > getViewH()) return;
+    const dy = touchStartY - e.touches[0].clientY;
+    progress = Math.max(0, Math.min(0.999, progressAtTouchStart + dy / getTrackTotal()));
+    applyProgress(progress);
+  }, { passive: true });
+
+  video.addEventListener('loadedmetadata', () => applyProgress(0));
+})();
+</script>
+
+<style>
+.vs-wrap { position: relative; }
+
+.vs-panel {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.vs-panel--dark {
+  background: var(--bg-dark);
+  z-index: 1;
+}
+
+.vs-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(201,165,107,.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201,165,107,.07) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+  pointer-events: none;
+}
+
+.vs-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.vs-content {
+  position: relative;
+  z-index: 1;
+}
+
+.vs-content--center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vs-headline {
+  font-family: 'Morganite', sans-serif;
+  font-size: clamp(4.5rem, 11vw, 11rem);
+  font-weight: 700;
+  line-height: .88;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--bg);
+  margin-bottom: 2.5rem;
+}
+
+.vs-headline em {
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.vs-headline--dark {
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+
+.vs-headline--dark em {
+  color: var(--green);
+}
+
+.vs-scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(201,165,107,.5);
+}
+
+.vs-scroll-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: vsPulse 2s ease-in-out infinite;
+}
+
+@keyframes vsPulse {
+  0%, 100% { opacity: .3; transform: scale(1); }
+  50%       { opacity: 1;  transform: scale(1.6); }
+}
+
+.vs-scrub-track {
+  position: relative;
+  height: 350vh;
+}
+
+.vs-scrub-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  z-index: 2;
+}
+
+.vs-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vs-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem;
+  pointer-events: none;
+}
+
+.vs-overlay-chips {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(15,61,46,.72);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(201,165,107,.22);
+  color: var(--gold);
+  padding: .5rem 1.1rem;
+  border-radius: 99px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.vs-chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: vsPulse 2.2s ease-in-out infinite;
+}
+
+.vs-overlay-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+}
+
+.vs-watch-label {
+  font-size: .63rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(244,238,222,.45);
+}
+
+.vs-bar-wrap {
+  width: 100px; height: 2px;
+  background: rgba(244,238,222,.18);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.vs-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 99px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .04s linear;
+}
+
+.vs-panel--cream {
+  background: var(--bg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  z-index: 3;
+  justify-content: center;
+  height: 55vh;
+  min-height: 340px;
+}
+
+@media (max-width: 900px) {
+  .vs-headline { font-size: clamp(3rem, 13vw, 5.5rem); margin-bottom: 1.5rem; }
+  .vs-content  { padding: 0 1.5rem; }
+  .vs-overlay  { padding: 1.5rem; }
+  .vs-overlay-chips { flex-direction: column; gap: .5rem; align-items: flex-start; }
+  .vs-chip { font-size: .6rem; padding: .38rem .75rem; }
+  .vs-overlay-foot { gap: .5rem; }
+  .vs-bar-wrap { width: 80px; }
+}
+
+@media (max-width: 768px) {
+  .vs-scrub-track  { height: 300vh; }
+  .vs-scrub-sticky { height: 100dvh; }
+  .vs-video        { object-fit: cover; width: 100%; height: 100%; }
+}
+</style>

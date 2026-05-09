@@ -1,5 +1,6 @@
 const CLOUD = 
   (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAME as string) || 
+  (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAM as string) || 
   (import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as string) || 
   'ddtjwooiz';
 

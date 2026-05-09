@@ -46,9 +46,9 @@ const ASSETS = [
   { file: 'public/assets/img/products/contenedor.jpg',       folder: 'naturizable/products', id: 'contenedor',   type: 'image' },
 
   // ── PARTNERS ─────────────────────────────────────
-  { file: 'public/assets/img/partners/Lonely.webp',          folder: 'naturizable/partners', id: 'lonely',       type: 'image' },
-  { file: 'public/assets/img/partners/Tom Ford.webp',        folder: 'naturizable/partners', id: 'tom-ford',     type: 'image' },
-  { file: 'public/assets/img/partners/NU.png',               folder: 'naturizable/partners', id: 'nu',           type: 'image' },
+  { file: 'public/assets/img/partners/lonely.svg',           folder: 'naturizable/partners', id: 'lonely',       type: 'image' },
+  { file: 'public/assets/img/partners/tom.svg',              folder: 'naturizable/partners', id: 'tom-ford',     type: 'image' },
+  { file: 'public/assets/img/partners/naciones.svg',         folder: 'naturizable/partners', id: 'nu',           type: 'image' },
   { file: 'public/assets/img/partners/BBVA.jpg',             folder: 'naturizable/partners', id: 'bbva',         type: 'image' },
 
   // ── EMPAQUE ──────────────────────────────────────

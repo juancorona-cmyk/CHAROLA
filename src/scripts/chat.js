@@ -106,7 +106,19 @@
   function openChat(e) {
     if (e) e.preventDefault();
     chatbot.classList.add('open');
-    setTimeout(() => input.focus(), 100);
+    
+    // Only auto-focus on non-mobile devices to prevent keyboard from covering info
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  function closeChat() {
+    chatbot.classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   launcher.addEventListener('click', openChat);
@@ -114,19 +126,19 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      chatbot.classList.remove('open');
+      closeChat();
       return;
     }
     if (e.key === 'f' || e.key === 'F') {
       const tag = document.activeElement?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      chatbot.classList.toggle('open');
-      if (chatbot.classList.contains('open')) setTimeout(() => input.focus(), 100);
+      if (chatbot.classList.contains('open')) closeChat();
+      else openChat();
     }
   });
 
-  closeBtn.addEventListener('click', () => chatbot.classList.remove('open'));
-  if (backBtn) backBtn.addEventListener('click', () => chatbot.classList.remove('open'));
+  closeBtn.addEventListener('click', closeChat);
+  if (backBtn) backBtn.addEventListener('click', closeChat);
 
   form.addEventListener('submit', e => {
     e.preventDefault();

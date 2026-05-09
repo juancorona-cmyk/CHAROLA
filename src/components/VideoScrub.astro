@@ -160,9 +160,14 @@ const fillId   = `${id}Fill`;
 
   function apply(p) {
     if (video.duration && !isNaN(video.duration)) {
-      // Clamping to duration - 0.05 prevents some browsers from stuttering at the absolute end
-      const seekTime = Math.min(p * video.duration, video.duration - 0.05);
-      video.currentTime = seekTime;
+      // Clamping to avoid the last frame "glitch"
+      const targetTime = p * video.duration;
+      const seekTime = Math.max(0, Math.min(targetTime, video.duration - 0.06));
+      
+      // Only seek if the change is significant to avoid decoder stress
+      if (Math.abs(video.currentTime - seekTime) > 0.01) {
+        video.currentTime = seekTime;
+      }
     }
     if (fill) fill.style.transform = `scaleX(${p})`;
   }
@@ -173,8 +178,8 @@ const fillId   = `${id}Fill`;
       return;
     }
 
-    // Slightly faster smoothing (0.15) for better responsiveness
-    currentP += (targetP - currentP) * 0.15;
+    // Faster smoothing (0.18) for a "tighter" feel with a 6s video
+    currentP += (targetP - currentP) * 0.18;
     
     const delta = Math.abs(targetP - currentP);
     if (delta < 0.0001) currentP = targetP;
@@ -309,7 +314,7 @@ const fillId   = `${id}Fill`;
 
 .vs-scrub-track {
   position: relative;
-  height: 450vh;
+  height: 300vh;
 }
 
 .vs-scrub-sticky {

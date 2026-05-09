@@ -1,19 +1,5 @@
 @font-face {
   font-family: 'Morganite';
-  src: url('/fonts/Morganite-Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Morganite';
-  src: url('/fonts/Morganite-ExtraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Morganite';
   src: url('/fonts/Morganite-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
@@ -44,20 +30,6 @@
   font-family: 'Morganite';
   src: url('/fonts/Morganite-Bold.ttf') format('truetype');
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Morganite';
-  src: url('/fonts/Morganite-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Morganite';
-  src: url('/fonts/Morganite-Black.ttf') format('truetype');
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
@@ -128,7 +100,6 @@ body::before {
   opacity: .022;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
-  will-change: auto;
 }
 @media (max-width: 768px) { body::before { display: none; } }
 
@@ -501,7 +472,7 @@ body::before {
   background: var(--bg-card); border-radius: var(--radius-md);
   padding: 2.5rem 2rem; position: relative;
   transition: transform .4s var(--ease), box-shadow .4s var(--ease);
-  cursor: pointer; display: flex; flex-direction: column; min-height: 520px;
+  border: 1px solid transparent;
   border: 1px solid transparent;
   overflow: hidden;
 }
@@ -517,8 +488,8 @@ body::before {
   border-color: rgba(201,165,107,.2);
 }
 .product-img {
-  aspect-ratio: 1/1; border-radius: var(--radius-sm);
-  background: var(--bg-alt); margin-bottom: 1.5rem;
+  aspect-ratio: 3/4; border-radius: var(--radius-sm);
+  background: #fff; margin-bottom: .9rem;
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
 }
@@ -550,11 +521,29 @@ body::before {
 .product-tag.coming::before { background: var(--ink-muted); }
 .product-name {
   font-family: 'Morganite', sans-serif;
-  font-size: 2.8rem; font-weight: 700;
-  letter-spacing: .02em; color: var(--ink); margin-bottom: .5rem;
+  font-size: 2.2rem; font-weight: 700;
+  letter-spacing: .02em; color: var(--ink); margin-bottom: .35rem;
   text-transform: uppercase; line-height: .9;
 }
-.product-desc { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.4; }
+.product-desc { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.35; margin-bottom: .5rem; }
+.product-buy-links { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; margin-top: .5rem; }
+.buy-btn {
+  display: flex; align-items: center; justify-content: center;
+  padding: .45rem .6rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; text-align: center;
+  text-decoration: none;
+  transition: all .18s var(--ease);
+  border: 1px solid var(--line);
+  color: var(--ink-soft); background: var(--bg-card);
+}
+.buy-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,42,31,.1); }
+.buy-btn.ml:hover     { border-color: #FFE600; color: #333; background: #FFF159; }
+.buy-btn.tiktok:hover { border-color: #111;    color: #fff; background: #111; }
+.buy-btn.walmart:hover{ border-color: #0071DC; color: #0071DC; background: #E6F1FB; }
+.buy-btn.amazon:hover { border-color: #FF9900; color: #111; background: #FFD814; }
 .product-arrow { margin-top: auto; padding-top: 1.5rem; display: flex; justify-content: flex-end; }
 .product-arrow svg {
   width: 36px; height: 36px;

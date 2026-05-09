@@ -26,7 +26,7 @@ export const ASSETS = {
 
   // Products
   charola855:   cld('naturizable/products/charola-855'),
-  producto:     cld('naturizable/products/producto'),
+  producto01:   cld('naturizable/products/producto01'),
   vaso:         cld('naturizable/products/vaso'),
   contenedor:   cld('naturizable/products/contenedor'),
   charola:      cld('naturizable/products/charola-hero'),  // hero display

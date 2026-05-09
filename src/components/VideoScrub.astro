@@ -114,82 +114,70 @@ const fillId   = `${id}Fill`;
   const fill  = document.getElementById(fillId);
   if (!video || !track) return;
 
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-  let unlocked = false;
-  function unlock() {
-    if (unlocked) return;
-    unlocked = true;
-    video.play().then(() => { video.pause(); video.currentTime = 0; }).catch(() => {});
+  /* ── MOBILE: auto-play video when section enters viewport ── */
+  if (isMobile) {
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    // Observe the sticky container, not the tall track
+    const sticky = track.querySelector('.vs-scrub-sticky');
+    if (sticky) obs.observe(sticky);
+    else obs.observe(track);
+
+    // Show full progress bar while playing
+    if (fill) fill.style.transform = 'scaleX(1)';
+    return;
   }
-  document.addEventListener('touchstart', unlock, { once: true, passive: true });
 
-  function getViewH() {
-    return window.visualViewport?.height ?? window.innerHeight;
+  /* ── DESKTOP: scroll-driven video scrub ── */
+
+  function getP() {
+    const rect   = track.getBoundingClientRect();
+    const viewH  = window.visualViewport?.height ?? window.innerHeight;
+    const total  = Math.max(1, rect.height - viewH);
+    return Math.max(0, Math.min(0.999, -rect.top / total));
   }
 
-  function applyProgress(p) {
+  function apply(p) {
     if (video.duration && !isNaN(video.duration)) {
       video.currentTime = p * video.duration;
     }
     if (fill) fill.style.transform = `scaleX(${p})`;
   }
 
-  if (!isMobile) {
-    let targetP  = 0;
-    let currentP = 0;
-    let rafId    = null;
+  let rafId = null;
+  let lastP = -1;
 
-    function getScrollProgress() {
-      const rect  = track.getBoundingClientRect();
-      const total = Math.max(1, track.offsetHeight - getViewH());
-      return Math.max(0, Math.min(0.999, -rect.top / total));
-    }
-
-    function tick() {
-      rafId = null;
-      currentP += (targetP - currentP) * 0.12;
-      const delta = Math.abs(targetP - currentP);
-      if (delta < 0.0002) currentP = targetP;
-      applyProgress(currentP);
-      if (delta > 0.0002) rafId = requestAnimationFrame(tick);
-    }
-
-    window.addEventListener('scroll', () => {
-      targetP = getScrollProgress();
-      if (rafId === null) rafId = requestAnimationFrame(tick);
-    }, { passive: true });
-
-    video.addEventListener('loadedmetadata', () => applyProgress(getScrollProgress()));
-    window.visualViewport?.addEventListener('resize', () => {
-      targetP = getScrollProgress();
-      if (rafId === null) rafId = requestAnimationFrame(tick);
-    });
-    return;
+  function tick() {
+    rafId = null;
+    const p = getP();
+    if (p !== lastP) { lastP = p; apply(p); }
+    rafId = requestAnimationFrame(tick);
   }
 
-  let progress             = 0;
-  let touchStartY          = 0;
-  let progressAtTouchStart = 0;
-
-  function getTrackTotal() {
-    return Math.max(1, track.offsetHeight - getViewH());
+  function start() {
+    if (video.readyState >= 1 && video.duration && !isNaN(video.duration)) {
+      if (rafId === null) rafId = requestAnimationFrame(tick);
+    } else {
+      setTimeout(start, 50);
+    }
   }
-
-  document.addEventListener('touchstart', (e) => {
-    touchStartY          = e.touches[0].clientY;
-    progressAtTouchStart = progress;
-  }, { passive: true });
-
-  document.addEventListener('touchmove', (e) => {
-    const rect = track.getBoundingClientRect();
-    if (rect.bottom < 0 || rect.top > getViewH()) return;
-    const dy = touchStartY - e.touches[0].clientY;
-    progress = Math.max(0, Math.min(0.999, progressAtTouchStart + dy / getTrackTotal()));
-    applyProgress(progress);
-  }, { passive: true });
-
-  video.addEventListener('loadedmetadata', () => applyProgress(0));
+  video.addEventListener('loadedmetadata', start, { once: true });
+  if (video.readyState >= 1) start();
 })();
 </script>
 
@@ -380,7 +368,7 @@ const fillId   = `${id}Fill`;
   border-radius: 99px;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform .04s linear;
+
 }
 
 .vs-panel--cream {
@@ -403,8 +391,8 @@ const fillId   = `${id}Fill`;
 }
 
 @media (max-width: 768px) {
-  .vs-scrub-track  { height: 300vh; }
-  .vs-scrub-sticky { height: 100dvh; }
+  .vs-scrub-track  { height: 150vh; }
+  .vs-scrub-sticky { height: 100vh; }
   .vs-video        { object-fit: cover; width: 100%; height: 100%; }
 }
 </style>

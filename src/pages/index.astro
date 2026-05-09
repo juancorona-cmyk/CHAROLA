@@ -56,8 +56,9 @@ import '../styles/global.css';
 <script>
 document.documentElement.classList.add('js-loaded');
 
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-fade');
 setTimeout(() => {
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-fade').forEach(el => el.classList.add('in'));
+  revealEls.forEach(el => el.classList.add('in'));
 }, 3000);
 
 /* ── NAV SCROLL ── */
@@ -184,10 +185,10 @@ langBtns.forEach(btn => {
 /* ── REVEAL ON SCROLL ── */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('in');
+    if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); }
   });
 }, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-fade').forEach(el => observer.observe(el));
+revealEls.forEach(el => observer.observe(el));
 
 /* ── HERO ENTRANCE (restart on scroll) ── */
 const heroSection = document.getElementById('inicio');

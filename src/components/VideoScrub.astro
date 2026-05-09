@@ -168,15 +168,22 @@ const fillId   = `${id}Fill`;
       }
     }
 
-    // Modern "Push & Dim" transition at the end (from 88% to 100% of scroll)
-    if (p > 0.88) {
-      const progress = (p - 0.88) / 0.12;
-      // Dim brightness and move up slightly
-      video.style.filter = `brightness(${1 - progress * 0.7})`;
-      video.style.transform = `translateY(${-progress * 30}px)`; 
+    // Elegant "Cinematic Dim" transition (no gaps, no black bars)
+    if (p > 0.85) {
+      const progress = (p - 0.85) / 0.15;
+      // Dim brightness and slightly increase contrast for a richer look
+      video.style.filter = `brightness(${1 - progress * 0.85}) contrast(${1 + progress * 0.2})`;
+      // Ensure container background matches the next section to avoid flashes
+      const sticky = track.querySelector('.vs-scrub-sticky');
+      if (sticky) {
+        sticky.style.background = progress > 0.5 ? 'var(--bg)' : '#000';
+      }
     } else {
-      video.style.filter = 'brightness(1)';
-      video.style.transform = 'translateY(0)';
+      video.style.filter = 'brightness(1) contrast(1)';
+      const sticky = track.querySelector('.vs-scrub-sticky');
+      if (sticky) {
+        sticky.style.background = '#000';
+      }
     }
 
     if (fill) fill.style.transform = `scaleX(${p})`;
@@ -324,7 +331,7 @@ const fillId   = `${id}Fill`;
 
 .vs-scrub-track {
   position: relative;
-  height: 300vh;
+  height: 350vh;
 }
 
 .vs-scrub-sticky {

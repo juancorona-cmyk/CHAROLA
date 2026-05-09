@@ -2081,12 +2081,12 @@ html.js-loaded .reveal-fade.in { opacity: 1; transform: none; }
 
   /* ── CHATBOT ── */
   .chatbot { bottom: 1rem; right: 1rem; }
-  .chatbot.open { top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; }
+  .chatbot.open { top: 0; left: 0; right: 0; bottom: auto; height: 100dvh; }
   .chatbot.open .chatbot-window {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
-    height: 100dvh;
+    height: 100%;
     border-radius: 0;
     max-height: none;
   }

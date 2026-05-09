@@ -111,6 +111,10 @@
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isMobile) {
       document.body.style.overflow = 'hidden';
+      // Sync height with visual viewport to handle keyboard
+      syncHeight();
+      window.visualViewport?.addEventListener('resize', syncHeight);
+      window.visualViewport?.addEventListener('scroll', syncHeight);
     } else {
       setTimeout(() => input.focus(), 100);
     }
@@ -119,6 +123,17 @@
   function closeChat() {
     chatbot.classList.remove('open');
     document.body.style.overflow = '';
+    window.visualViewport?.removeEventListener('resize', syncHeight);
+    window.visualViewport?.removeEventListener('scroll', syncHeight);
+    chatbot.style.height = '';
+  }
+
+  function syncHeight() {
+    if (!chatbot.classList.contains('open')) return;
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    chatbot.style.height = `${vh}px`;
+    // Scroll to bottom when keyboard opens
+    body.scrollTop = body.scrollHeight;
   }
 
   launcher.addEventListener('click', openChat);

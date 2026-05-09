@@ -726,11 +726,13 @@ body::before {
   align-items: center;
   justify-content: center;
   font-family: 'Morganite', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--gold);
-  background: var(--bg-alt);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--bg-dark);
   z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 .partner-mark img {
   width: 100%; height: 100%; object-fit: contain;

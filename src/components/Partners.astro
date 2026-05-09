@@ -13,7 +13,7 @@ import { ASSETS } from '../lib/cloudinary';
       <div class="partner-card reveal">
         <div class="partner-mark whale">
           <span class="partner-initial">L</span>
-          <img src={ASSETS.lonely} alt="Lonely Whale" loading="lazy" decoding="async" />
+          <img src={ASSETS.lonely} alt="Lonely Whale" loading="lazy" decoding="async" onerror="this.style.display='none'" />
         </div>
         <div class="partner-name">Lonely Whale</div>
         <div class="partner-role" data-i18n="partners.lw">{t('partners.lw')}</div>
@@ -22,7 +22,7 @@ import { ASSETS } from '../lib/cloudinary';
       <div class="partner-card reveal">
         <div class="partner-mark tom">
           <span class="partner-initial">T</span>
-          <img src={ASSETS.tomFord} alt="Tom Ford" loading="lazy" decoding="async" />
+          <img src={ASSETS.tomFord} alt="Tom Ford" loading="lazy" decoding="async" onerror="this.style.display='none'" />
         </div>
         <div class="partner-name">Tom Ford Plastic Innovation</div>
         <div class="partner-role" data-i18n="partners.tf">{t('partners.tf')}</div>
@@ -31,7 +31,7 @@ import { ASSETS } from '../lib/cloudinary';
       <div class="partner-card reveal">
         <div class="partner-mark un">
           <span class="partner-initial">N</span>
-          <img src={ASSETS.nu} alt="Naciones Unidas" loading="lazy" decoding="async" />
+          <img src={ASSETS.nu} alt="Naciones Unidas" loading="lazy" decoding="async" onerror="this.style.display='none'" />
         </div>
         <div class="partner-name" data-i18n="partners.unName">{t('partners.unName')}</div>
         <div class="partner-role" data-i18n="partners.un">{t('partners.un')}</div>
@@ -39,7 +39,7 @@ import { ASSETS } from '../lib/cloudinary';
 
       <div class="partner-card reveal">
         <div class="partner-mark bbva">
-          <img src={ASSETS.bbva} alt="BBVA" loading="lazy" decoding="async" />
+          <img src={ASSETS.bbva} alt="BBVA" loading="lazy" decoding="async" onerror="this.style.display='none'" />
         </div>
         <div class="partner-name">BBVA</div>
         <div class="partner-role" data-i18n="partners.bbva">{t('partners.bbva')}</div>

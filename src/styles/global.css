@@ -1457,7 +1457,14 @@ body::before {
 }
 
 /* ── CHATBOT ── */
-.chatbot { position: fixed; bottom: 2rem; right: 2rem; z-index: 200; font-family: var(--font-body); }
+.chatbot {
+  position: fixed; bottom: 2rem; right: 2rem;
+  z-index: 10005;
+  font-family: var(--font-body);
+  transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0,0,0);
+  pointer-events: auto;
+}
 .chatbot-launcher {
   width: 62px; height: 62px; border-radius: 50%;
   background: var(--bg-dark); color: var(--gold);
@@ -1466,6 +1473,7 @@ body::before {
   box-shadow: 0 15px 40px rgba(15,61,46,.3);
   transition: transform .3s var(--ease), box-shadow .3s var(--ease);
   position: relative;
+  pointer-events: auto !important;
 }
 .chatbot-launcher:hover { transform: scale(1.06); box-shadow: 0 20px 50px rgba(15,61,46,.4); }
 .chatbot-launcher::after {

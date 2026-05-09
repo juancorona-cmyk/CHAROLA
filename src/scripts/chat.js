@@ -103,12 +103,14 @@
     });
   }
 
-  function openChat() {
+  function openChat(e) {
+    if (e) e.preventDefault();
     chatbot.classList.add('open');
     setTimeout(() => input.focus(), 100);
   }
 
   launcher.addEventListener('click', openChat);
+  launcher.addEventListener('touchstart', openChat, { passive: false });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {

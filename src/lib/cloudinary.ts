@@ -1,4 +1,4 @@
-const CLOUD = (import.meta.env.CLOUDINARY_CLOUD_NAME as string) || 'ddtjwooiz';
+const CLOUD = (import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as string) || (import.meta.env.CLOUDINARY_CLOUD_NAME as string) || 'ddtjwooiz';
 
 type Type = 'image' | 'video';
 
@@ -12,14 +12,19 @@ export function cld(
   opts: { type?: Type; transforms?: string } = {}
 ): string {
   const { type = 'image', transforms = 'f_auto,q_auto' } = opts;
-  return `https://res.cloudinary.com/${CLOUD}/${type}/upload/${transforms}/${publicId}`;
+  // vc_auto is only for videos
+  const finalTransforms = type === 'video' && !transforms.includes('vc_') 
+    ? `${transforms},vc_auto` 
+    : transforms;
+    
+  return `https://res.cloudinary.com/${CLOUD}/${type}/upload/${finalTransforms}/${publicId}`;
 }
 
 // ── Pre-built URLs for every project asset ─────────────────────────────────
 
 export const ASSETS = {
-  // Brand — SVG no debe tener f_auto (lo convierte a raster)
-  logo: cld('charola/logo', { transforms: 'f_svg,q_auto' }),
+  // Brand
+  logo: cld('charola/logo', { transforms: 'f_auto,q_auto' }),
 
   // Hero
   heroPlan: cld('naturizable/hero/plan'),
@@ -39,7 +44,7 @@ export const ASSETS = {
 
   // Empaque
   captura: cld('naturizable/empaque/captura'),
-  video:   cld('naturizable/empaque/video', { type: 'video', transforms: 'q_auto:good,vc_auto' }),
+  video:   cld('naturizable/empaque/video', { type: 'video', transforms: 'q_auto' }),
 
   // Parallax
   plxFondo:     cld('naturizable/parallax/fondo'),

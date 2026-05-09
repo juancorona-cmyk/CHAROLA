@@ -160,9 +160,9 @@ const fillId   = `${id}Fill`;
 
   function apply(p) {
     if (video.duration && !isNaN(video.duration)) {
-      // Direct assignment can be jumpy, lerp helps but video hardware decoding 
-      // is the real bottleneck. We ensure we don't set it if it hasn't changed enough.
-      video.currentTime = p * video.duration;
+      // Clamping to duration - 0.05 prevents some browsers from stuttering at the absolute end
+      const seekTime = Math.min(p * video.duration, video.duration - 0.05);
+      video.currentTime = seekTime;
     }
     if (fill) fill.style.transform = `scaleX(${p})`;
   }
@@ -173,8 +173,8 @@ const fillId   = `${id}Fill`;
       return;
     }
 
-    // Smoothing factor: 0.1 for very smooth, 0.2 for more responsive
-    currentP += (targetP - currentP) * 0.12;
+    // Slightly faster smoothing (0.15) for better responsiveness
+    currentP += (targetP - currentP) * 0.15;
     
     const delta = Math.abs(targetP - currentP);
     if (delta < 0.0001) currentP = targetP;
@@ -309,7 +309,7 @@ const fillId   = `${id}Fill`;
 
 .vs-scrub-track {
   position: relative;
-  height: 350vh;
+  height: 450vh;
 }
 
 .vs-scrub-sticky {

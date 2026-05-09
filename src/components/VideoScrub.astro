@@ -160,15 +160,24 @@ const fillId   = `${id}Fill`;
 
   function apply(p) {
     if (video.duration && !isNaN(video.duration)) {
-      // Clamping to avoid the last frame "glitch"
       const targetTime = p * video.duration;
       const seekTime = Math.max(0, Math.min(targetTime, video.duration - 0.06));
       
-      // Only seek if the change is significant to avoid decoder stress
       if (Math.abs(video.currentTime - seekTime) > 0.01) {
         video.currentTime = seekTime;
       }
     }
+
+    // Smooth fade-out and scale at the end (from 90% to 100% of scroll)
+    if (p > 0.88) {
+      const fade = Math.max(0, (1 - p) / 0.12);
+      video.style.opacity = (0.3 + (fade * 0.7)).toString(); // Don't go total black, keep some visibility
+      video.style.transform = `scale(${0.98 + (fade * 0.02)})`;
+    } else {
+      video.style.opacity = '1';
+      video.style.transform = 'scale(1)';
+    }
+
     if (fill) fill.style.transform = `scaleX(${p})`;
   }
 
@@ -178,8 +187,8 @@ const fillId   = `${id}Fill`;
       return;
     }
 
-    // Faster smoothing (0.18) for a "tighter" feel with a 6s video
-    currentP += (targetP - currentP) * 0.18;
+    // Slightly more "airy" smoothing (0.14) for a more cinematic feel
+    currentP += (targetP - currentP) * 0.14;
     
     const delta = Math.abs(targetP - currentP);
     if (delta < 0.0001) currentP = targetP;

@@ -168,14 +168,15 @@ const fillId   = `${id}Fill`;
       }
     }
 
-    // Smooth fade-out and scale at the end (from 90% to 100% of scroll)
+    // Modern "Push & Dim" transition at the end (from 88% to 100% of scroll)
     if (p > 0.88) {
-      const fade = Math.max(0, (1 - p) / 0.12);
-      video.style.opacity = (0.3 + (fade * 0.7)).toString(); // Don't go total black, keep some visibility
-      video.style.transform = `scale(${0.98 + (fade * 0.02)})`;
+      const progress = (p - 0.88) / 0.12;
+      // Dim brightness and move up slightly
+      video.style.filter = `brightness(${1 - progress * 0.7})`;
+      video.style.transform = `translateY(${-progress * 30}px)`; 
     } else {
-      video.style.opacity = '1';
-      video.style.transform = 'scale(1)';
+      video.style.filter = 'brightness(1)';
+      video.style.transform = 'translateY(0)';
     }
 
     if (fill) fill.style.transform = `scaleX(${p})`;

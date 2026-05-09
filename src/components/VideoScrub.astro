@@ -145,39 +145,67 @@ const fillId   = `${id}Fill`;
 
   /* ── DESKTOP: scroll-driven video scrub ── */
 
+  let targetP  = 0;
+  let currentP = 0;
+  let rafId    = null;
+  let isVisible = false;
+
   function getP() {
     const rect   = track.getBoundingClientRect();
     const viewH  = window.visualViewport?.height ?? window.innerHeight;
     const total  = Math.max(1, rect.height - viewH);
-    return Math.max(0, Math.min(0.999, -rect.top / total));
+    // Use 1.0 instead of 0.999 to allow reaching the absolute end frame
+    return Math.max(0, Math.min(1, -rect.top / total));
   }
 
   function apply(p) {
     if (video.duration && !isNaN(video.duration)) {
+      // Direct assignment can be jumpy, lerp helps but video hardware decoding 
+      // is the real bottleneck. We ensure we don't set it if it hasn't changed enough.
       video.currentTime = p * video.duration;
     }
     if (fill) fill.style.transform = `scaleX(${p})`;
   }
 
-  let rafId = null;
-  let lastP = -1;
-
   function tick() {
-    rafId = null;
-    const p = getP();
-    if (p !== lastP) { lastP = p; apply(p); }
-    rafId = requestAnimationFrame(tick);
-  }
+    if (!isVisible) {
+      rafId = null;
+      return;
+    }
 
-  function start() {
-    if (video.readyState >= 1 && video.duration && !isNaN(video.duration)) {
-      if (rafId === null) rafId = requestAnimationFrame(tick);
+    // Smoothing factor: 0.1 for very smooth, 0.2 for more responsive
+    currentP += (targetP - currentP) * 0.12;
+    
+    const delta = Math.abs(targetP - currentP);
+    if (delta < 0.0001) currentP = targetP;
+
+    apply(currentP);
+
+    if (delta > 0.0001 || isVisible) {
+      rafId = requestAnimationFrame(tick);
     } else {
-      setTimeout(start, 50);
+      rafId = null;
     }
   }
-  video.addEventListener('loadedmetadata', start, { once: true });
-  if (video.readyState >= 1) start();
+
+  const observer = new IntersectionObserver((entries) => {
+    isVisible = entries[0].isIntersecting;
+    if (isVisible && !rafId) {
+      rafId = requestAnimationFrame(tick);
+    }
+  }, { threshold: 0 });
+
+  observer.observe(track);
+
+  window.addEventListener('scroll', () => {
+    targetP = getP();
+  }, { passive: true });
+
+  video.addEventListener('loadedmetadata', () => {
+    targetP = getP();
+    currentP = targetP;
+    apply(currentP);
+  });
 })();
 </script>
 

@@ -39,8 +39,8 @@ const ASSETS = [
   { file: 'public/assets/img/hero/plan.jpeg',                folder: 'naturizable/hero',     id: 'plan',        type: 'image' },
 
   // ── PRODUCTS ─────────────────────────────────────
-  { file: 'public/assets/img/products/Charola.webp',         folder: 'naturizable/products', id: 'charola-hero', type: 'image' },
-  { file: 'public/assets/img/products/charola-855.jpg',      folder: 'naturizable/products', id: 'charola-855',  type: 'image' },
+  { file: 'producto1.png',                                folder: 'naturizable/products', id: 'charola-hero', type: 'image' },
+  { file: 'producto1.png',                                folder: 'naturizable/products', id: 'charola-855',  type: 'image' },
   { file: 'public/assets/img/products/producto.jpg',         folder: 'naturizable/products', id: 'producto',     type: 'image' },
   { file: 'public/assets/img/products/vaso.jpg',             folder: 'naturizable/products', id: 'vaso',         type: 'image' },
   { file: 'public/assets/img/products/contenedor.jpg',       folder: 'naturizable/products', id: 'contenedor',   type: 'image' },

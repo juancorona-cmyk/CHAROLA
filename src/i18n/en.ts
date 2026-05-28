@@ -26,10 +26,10 @@ export const en = {
   },
   manifesto: {
     eyebrow: 'The Manifesto',
-    title: "This isn't a brand. It's a <em>return to common sense.</em>",
-    p1: 'For decades we asked plastic to take care of our food. We accepted foam that takes 500 years to disappear, coatings that leak PFAS, packaging that outlives us. We accepted it because there seemed to be no other way.',
-    p2: '<strong>There is another way.</strong> It existed before plastic — nature had been doing it right for millions of years. We just had to listen again.',
-    p3: "Naturizable is that return. Packaging that holds food with dignity, serves the taquero, the butcher, the produce vendor, the chef — and when it's done, returns to the earth without asking permission. <strong>We hold the world. One tray at a time.</strong>",
+    title: "Mexico's food deserves <em>packaging that matches it.</em>",
+    p1: "The taco, the cut of meat, the fruit from the market — all that food carries someone's early morning and hard work behind it. It deserves to arrive right. It deserves packaging that's worthy of the people who make it.",
+    p2: "<strong>Nature already had the answer.</strong> The corn husk, the palm, the earth's own fiber — they always worked. We gave them engineering: 100% natural cellulose, grease-resistant, good-looking, and when it's done, it goes back to the earth like it was never there.",
+    p3: "That's Naturizable. Dignified packaging for the taco vendor, the butcher, the produce seller, the chef — and for everyone who chooses to do things right. <strong>One tray at a time.</strong>",
   },
   identity: {
     eyebrow: 'Who you become',

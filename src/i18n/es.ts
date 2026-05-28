@@ -26,10 +26,10 @@ export const es = {
   },
   manifesto: {
     eyebrow: 'El Manifiesto',
-    title: 'Esto no es una marca. Es un <em>regreso al sentido común.</em>',
-    p1: 'Por décadas le pedimos al plástico que cuidara nuestra comida. Aceptamos foam que tarda 500 años en irse, recubrimientos que sueltan PFAS, empaques que viven más que nosotros. Lo aceptamos porque parecía no haber otra forma.',
-    p2: '<strong>Hay otra forma.</strong> Existe desde antes que el plástico — la naturaleza llevaba millones de años haciéndolo bien. Solo había que volver a escucharla.',
-    p3: 'Naturizable es ese regreso. Empaque que sostiene la comida con dignidad, sirve al taquero, al carnicero, al frutero, al chef — y cuando termina, regresa a la tierra sin pedir permiso. <strong>Sostenemos al mundo. Una charola a la vez.</strong>',
+    title: 'La comida de México merece <em>un empaque a su altura.</em>',
+    p1: 'El taco, la carne, la fruta del mercado — toda esa comida lleva detrás el trabajo de alguien que se levantó temprano y lo hizo con ganas. Merece llegar bien. Merece un empaque que esté a la altura de quien la prepara.',
+    p2: '<strong>La naturaleza ya tenía la respuesta.</strong> La hoja de maíz, la palma, la fibra de la tierra — siempre funcionaron. Nosotros les dimos ingeniería: celulosa 100% natural, que aguanta la grasa, que se ve bien y que cuando termina, regresa a la tierra como si nada.',
+    p3: 'Eso es Naturizable. Un empaque digno para el taquero, el carnicero, el frutero, el chef — y para todos los que eligen hacer las cosas bien. <strong>Una charola a la vez.</strong>',
   },
   identity: {
     eyebrow: '¿Quién te vuelves?',

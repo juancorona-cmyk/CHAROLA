@@ -1,63 +1,57 @@
-const CLOUD = 
-  (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAME as string) || 
-  (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAM as string) || 
-  (import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as string) || 
+const CLOUD =
+  (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAME as string) ||
+  (import.meta.env.PUBLIC_CHAROLA_CLOUD_NAM as string) ||
+  (import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as string) ||
   'ddtjwooiz';
 
 type Type = 'image' | 'video';
 
-/**
- * Returns an optimized Cloudinary URL.
- * @param publicId  e.g. 'naturizable/products/producto'
- * @param opts      resource type and optional extra transforms
- */
 export function cld(
   publicId: string,
   opts: { type?: Type; transforms?: string } = {}
 ): string {
   const { type = 'image', transforms = 'f_auto,q_auto' } = opts;
-  // vc_auto is only for videos
-  const finalTransforms = type === 'video' && !transforms.includes('vc_') 
-    ? `${transforms},vc_auto` 
+  const finalTransforms = type === 'video' && !transforms.includes('vc_')
+    ? `${transforms},vc_auto`
     : transforms;
-    
   return `https://res.cloudinary.com/${CLOUD}/${type}/upload/${finalTransforms}/${publicId}`;
 }
 
-// ── Pre-built URLs for every project asset ─────────────────────────────────
+// ── Assets — rutas locales (archivos en public/assets/img/) ────────────────
 
 export const ASSETS = {
   // Brand
-  logo: cld('charola/logo', { transforms: 'f_auto,q_auto' }),
+  logo: '/assets/img/logo.png',
 
-  // Hero
+  // Hero — TODO: coloca plan.jpg en public/assets/img/hero/
   heroPlan: cld('naturizable/hero/plan'),
 
   // Products
-  charola855:   cld('naturizable/products/charola-855'),
-  producto01:   cld('naturizable/products/producto01'),
-  vaso:         cld('naturizable/products/vaso'),
-  contenedor:   cld('naturizable/products/contenedor'),
-  charola:      cld('naturizable/products/charola-hero'),  // hero display
+  charola855:   '/assets/img/products/charola-855.jpg',
+  producto01:   '/assets/img/products/producto01.jpg',
+  vaso:         '/assets/img/products/vaso.png',
+  contenedor:   '/assets/img/products/contenedor.png',
+  charola:      '/assets/img/products/charola-hero.png',
 
-  // Partners
-  lonely:  cld('naturizable/partners/lonely'),
-  tomFord: cld('naturizable/partners/tom-ford'),
-  nu:      cld('naturizable/partners/nu'),
+  // Partners — SVGs locales
+  // TODO: coloca bbva en public/assets/img/partners/
+  lonely:  '/assets/img/partners/lonely.svg',
+  tomFord: '/assets/img/partners/tom.svg',
+  nu:      '/assets/img/partners/naciones.svg',
   bbva:    cld('naturizable/partners/bbva'),
 
-  // Empaque
+  // Empaque — TODO: coloca captura.jpg en public/assets/img/empaque/
   captura: cld('naturizable/empaque/captura'),
-  video:   cld('naturizable/empaque/video', { type: 'video', transforms: 'q_auto' }),
+  video:   '/assets/img/empaque/video.mp4',
 
   // Parallax
-  plxFondo:     cld('naturizable/parallax/fondo'),
-  plxTierra:    cld('naturizable/parallax/tierra'),
-  plxBaseTierra:cld('naturizable/parallax/base-tierra'),
-  plxCharola:   cld('naturizable/parallax/charola'),
-  plxPlanta:    cld('naturizable/parallax/planta'),
-  sello1:       cld('naturizable/parallax/sello-1'),
-  sello2:       cld('naturizable/parallax/sello-2'),
-  sello3:       cld('naturizable/parallax/sello-3'),
-  suiza:        cld('naturizable/parallax/suiza-white'),
+  plxFondo:     '/assets/img/parallax/fondo.png',
+  plxTierra:    '/assets/img/parallax/base-tierra.png',
+  plxBaseTierra:'/assets/img/parallax/base-tierra.png',
+  plxCharola:   '/assets/img/parallax/charola.png',
+  plxPlanta:    '/assets/img/parallax/planta.png',
+  sello1:       '/assets/img/parallax/sello-1.png',
+  sello2:       '/assets/img/parallax/sello-2.png',
+  sello3:       '/assets/img/parallax/sello-3.png',
+  suiza:        '/assets/img/parallax/suiza-white.png',
 } as const;

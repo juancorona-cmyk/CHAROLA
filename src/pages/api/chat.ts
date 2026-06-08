@@ -37,7 +37,7 @@ MUESTRAS: Disponibles para compradores serios. Email a ventas@naturizable.com co
 EMBAJADORES: Programa por invitación. Sueldo mensual, producto ilimitado. Email: info@naturizable.com.`;
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY ?? import.meta.env.OPENAI_API_KEY;
 
   if (!apiKey) {
     return new Response(JSON.stringify({ reply: 'Servicio no disponible. Escríbenos a <a href="mailto:info@naturizable.com">info@naturizable.com</a>.' }), {

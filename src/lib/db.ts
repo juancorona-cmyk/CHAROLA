@@ -6,8 +6,8 @@ let _initialized = false;
 function getClient(): Client {
   if (!_client) {
     _client = createClient({
-      url: import.meta.env.TURSO_URL as string,
-      authToken: import.meta.env.TURSO_AUTH_TOKEN as string,
+      url: (process.env.TURSO_URL ?? import.meta.env.TURSO_URL) as string,
+      authToken: (process.env.TURSO_AUTH_TOKEN ?? import.meta.env.TURSO_AUTH_TOKEN) as string,
     });
   }
   return _client;

@@ -10,8 +10,8 @@ export async function ensureAdminExists(): Promise<void> {
   const db  = await getDB();
   const res = await db.execute('SELECT COUNT(*) as cnt FROM admin_users');
   if (Number(res.rows[0].cnt) === 0) {
-    const username = (import.meta.env.ADMIN_USERNAME as string | undefined) || '';
-    const password = (import.meta.env.ADMIN_PASSWORD as string | undefined) || '';
+    const username = (process.env.ADMIN_USERNAME ?? import.meta.env.ADMIN_USERNAME) as string || '';
+    const password = (process.env.ADMIN_PASSWORD ?? import.meta.env.ADMIN_PASSWORD) as string || '';
     await db.execute({
       sql:  'INSERT INTO admin_users (username, password_hash) VALUES (?, ?)',
       args: [username, hashPassword(password)],
